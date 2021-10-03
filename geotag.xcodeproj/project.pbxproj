@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		62249B772708DE4D0040E177 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62249B762708DE4D0040E177 /* LoginController.swift */; };
+		62249B7B2708E44E0040E177 /* UIColor+CustomColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62249B7A2708E44E0040E177 /* UIColor+CustomColor.swift */; };
+		62249B7D270907A00040E177 /* HBNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62249B7C270907A00040E177 /* HBNavigationController.swift */; };
+		62249B7F270909A10040E177 /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62249B7E270909A10040E177 /* HomeController.swift */; };
+		62249B8227090A8A0040E177 /* ClubCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62249B8127090A8A0040E177 /* ClubCell.swift */; };
+		62249B8427093CA70040E177 /* ClubSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62249B8327093CA70040E177 /* ClubSearchController.swift */; };
 		623233E62705475A0068A21B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623233E52705475A0068A21B /* AppDelegate.swift */; };
 		623233E82705475A0068A21B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623233E72705475A0068A21B /* SceneDelegate.swift */; };
 		623233EA2705475A0068A21B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623233E92705475A0068A21B /* ViewController.swift */; };
@@ -16,6 +22,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		62249B762708DE4D0040E177 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
+		62249B7A2708E44E0040E177 /* UIColor+CustomColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CustomColor.swift"; sourceTree = "<group>"; };
+		62249B7C270907A00040E177 /* HBNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HBNavigationController.swift; sourceTree = "<group>"; };
+		62249B7E270909A10040E177 /* HomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
+		62249B8127090A8A0040E177 /* ClubCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClubCell.swift; sourceTree = "<group>"; };
+		62249B8327093CA70040E177 /* ClubSearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClubSearchController.swift; sourceTree = "<group>"; };
 		623233E22705475A0068A21B /* geotag.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = geotag.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		623233E52705475A0068A21B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		623233E72705475A0068A21B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -37,6 +49,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		62249B782708DE520040E177 /* controllers */ = {
+			isa = PBXGroup;
+			children = (
+				62249B762708DE4D0040E177 /* LoginController.swift */,
+				62249B8327093CA70040E177 /* ClubSearchController.swift */,
+				62249B7C270907A00040E177 /* HBNavigationController.swift */,
+				62249B7E270909A10040E177 /* HomeController.swift */,
+			);
+			path = controllers;
+			sourceTree = "<group>";
+		};
+		62249B792708E4270040E177 /* extensions */ = {
+			isa = PBXGroup;
+			children = (
+				62249B7A2708E44E0040E177 /* UIColor+CustomColor.swift */,
+			);
+			path = extensions;
+			sourceTree = "<group>";
+		};
+		62249B8027090A680040E177 /* views */ = {
+			isa = PBXGroup;
+			children = (
+				62249B8127090A8A0040E177 /* ClubCell.swift */,
+			);
+			path = views;
+			sourceTree = "<group>";
+		};
 		623233D92705475A0068A21B = {
 			isa = PBXGroup;
 			children = (
@@ -56,9 +95,12 @@
 		623233E42705475A0068A21B /* geotag */ = {
 			isa = PBXGroup;
 			children = (
+				62249B8027090A680040E177 /* views */,
+				62249B792708E4270040E177 /* extensions */,
 				623233E52705475A0068A21B /* AppDelegate.swift */,
 				623233E72705475A0068A21B /* SceneDelegate.swift */,
 				623233E92705475A0068A21B /* ViewController.swift */,
+				62249B782708DE520040E177 /* controllers */,
 				623233F12705475B0068A21B /* Assets.xcassets */,
 				623233F32705475B0068A21B /* LaunchScreen.storyboard */,
 				623233F62705475B0068A21B /* Info.plist */,
@@ -141,6 +183,12 @@
 				623233E62705475A0068A21B /* AppDelegate.swift in Sources */,
 				623233F02705475A0068A21B /* geotag.xcdatamodeld in Sources */,
 				623233E82705475A0068A21B /* SceneDelegate.swift in Sources */,
+				62249B7F270909A10040E177 /* HomeController.swift in Sources */,
+				62249B8427093CA70040E177 /* ClubSearchController.swift in Sources */,
+				62249B7B2708E44E0040E177 /* UIColor+CustomColor.swift in Sources */,
+				62249B772708DE4D0040E177 /* LoginController.swift in Sources */,
+				62249B8227090A8A0040E177 /* ClubCell.swift in Sources */,
+				62249B7D270907A00040E177 /* HBNavigationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
