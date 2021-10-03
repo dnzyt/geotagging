@@ -15,10 +15,16 @@
 		62249B8427093CA70040E177 /* ClubSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62249B8327093CA70040E177 /* ClubSearchController.swift */; };
 		623233E62705475A0068A21B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623233E52705475A0068A21B /* AppDelegate.swift */; };
 		623233E82705475A0068A21B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623233E72705475A0068A21B /* SceneDelegate.swift */; };
-		623233EA2705475A0068A21B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623233E92705475A0068A21B /* ViewController.swift */; };
 		623233F02705475A0068A21B /* geotag.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 623233EE2705475A0068A21B /* geotag.xcdatamodeld */; };
 		623233F22705475B0068A21B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 623233F12705475B0068A21B /* Assets.xcassets */; };
 		623233F52705475B0068A21B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 623233F32705475B0068A21B /* LaunchScreen.storyboard */; };
+		625D974A2709FE4700B138CD /* HBSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625D97492709FE4700B138CD /* HBSplitViewController.swift */; };
+		625D974C2709FE8F00B138CD /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625D974B2709FE8F00B138CD /* MenuController.swift */; };
+		625D974E270A043700B138CD /* BusinessController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625D974D270A043700B138CD /* BusinessController.swift */; };
+		625D9750270A07BE00B138CD /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625D974F270A07BE00B138CD /* MenuCell.swift */; };
+		625D9752270A102100B138CD /* TrainingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625D9751270A102100B138CD /* TrainingController.swift */; };
+		625D9754270A4B4700B138CD /* BusinessCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625D9753270A4B4700B138CD /* BusinessCell.swift */; };
+		625D9756270A557700B138CD /* QuestionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625D9755270A557700B138CD /* QuestionController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,11 +37,17 @@
 		623233E22705475A0068A21B /* geotag.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = geotag.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		623233E52705475A0068A21B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		623233E72705475A0068A21B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		623233E92705475A0068A21B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		623233EF2705475A0068A21B /* geotag.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = geotag.xcdatamodel; sourceTree = "<group>"; };
 		623233F12705475B0068A21B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		623233F42705475B0068A21B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		623233F62705475B0068A21B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		625D97492709FE4700B138CD /* HBSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HBSplitViewController.swift; sourceTree = "<group>"; };
+		625D974B2709FE8F00B138CD /* MenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
+		625D974D270A043700B138CD /* BusinessController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessController.swift; sourceTree = "<group>"; };
+		625D974F270A07BE00B138CD /* MenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCell.swift; sourceTree = "<group>"; };
+		625D9751270A102100B138CD /* TrainingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingController.swift; sourceTree = "<group>"; };
+		625D9753270A4B4700B138CD /* BusinessCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessCell.swift; sourceTree = "<group>"; };
+		625D9755270A557700B138CD /* QuestionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,7 +67,12 @@
 				62249B762708DE4D0040E177 /* LoginController.swift */,
 				62249B8327093CA70040E177 /* ClubSearchController.swift */,
 				62249B7C270907A00040E177 /* HBNavigationController.swift */,
+				625D974B2709FE8F00B138CD /* MenuController.swift */,
+				625D9755270A557700B138CD /* QuestionController.swift */,
 				62249B7E270909A10040E177 /* HomeController.swift */,
+				625D97492709FE4700B138CD /* HBSplitViewController.swift */,
+				625D974D270A043700B138CD /* BusinessController.swift */,
+				625D9751270A102100B138CD /* TrainingController.swift */,
 			);
 			path = controllers;
 			sourceTree = "<group>";
@@ -72,6 +89,8 @@
 			isa = PBXGroup;
 			children = (
 				62249B8127090A8A0040E177 /* ClubCell.swift */,
+				625D974F270A07BE00B138CD /* MenuCell.swift */,
+				625D9753270A4B4700B138CD /* BusinessCell.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -99,7 +118,6 @@
 				62249B792708E4270040E177 /* extensions */,
 				623233E52705475A0068A21B /* AppDelegate.swift */,
 				623233E72705475A0068A21B /* SceneDelegate.swift */,
-				623233E92705475A0068A21B /* ViewController.swift */,
 				62249B782708DE520040E177 /* controllers */,
 				623233F12705475B0068A21B /* Assets.xcassets */,
 				623233F32705475B0068A21B /* LaunchScreen.storyboard */,
@@ -179,16 +197,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				623233EA2705475A0068A21B /* ViewController.swift in Sources */,
 				623233E62705475A0068A21B /* AppDelegate.swift in Sources */,
 				623233F02705475A0068A21B /* geotag.xcdatamodeld in Sources */,
 				623233E82705475A0068A21B /* SceneDelegate.swift in Sources */,
+				625D9752270A102100B138CD /* TrainingController.swift in Sources */,
+				625D974C2709FE8F00B138CD /* MenuController.swift in Sources */,
+				625D9754270A4B4700B138CD /* BusinessCell.swift in Sources */,
 				62249B7F270909A10040E177 /* HomeController.swift in Sources */,
 				62249B8427093CA70040E177 /* ClubSearchController.swift in Sources */,
+				625D974A2709FE4700B138CD /* HBSplitViewController.swift in Sources */,
+				625D974E270A043700B138CD /* BusinessController.swift in Sources */,
 				62249B7B2708E44E0040E177 /* UIColor+CustomColor.swift in Sources */,
 				62249B772708DE4D0040E177 /* LoginController.swift in Sources */,
 				62249B8227090A8A0040E177 /* ClubCell.swift in Sources */,
+				625D9750270A07BE00B138CD /* MenuCell.swift in Sources */,
 				62249B7D270907A00040E177 /* HBNavigationController.swift in Sources */,
+				625D9756270A557700B138CD /* QuestionController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -19,7 +19,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let ws = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: ws)
         let nav = HBNavigationController(rootViewController: HomeController())
-        window?.rootViewController = nav
+        
+        let split = HBSplitViewController(style: .doubleColumn)
+//        split.setViewController(UINavigationController(rootViewController: MenuController()), for: .primary)
+//        split.setViewController(UINavigationController(rootViewController: BusinessController()), for: .secondary)
+        split.preferredDisplayMode = .oneBesideSecondary
+        split.preferredPrimaryColumnWidth = 120
+        
+        window?.rootViewController = split
         window?.makeKeyAndVisible()
     }
 
