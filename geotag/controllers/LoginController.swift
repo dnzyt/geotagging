@@ -11,6 +11,15 @@ class LoginController: UIViewController {
     
     var loginFormYContraint: NSLayoutConstraint?
     
+    let logoView: UIImageView = {
+        let l = UIImageView()
+        l.image = UIImage(named: "horizon_logo")
+        l.contentMode = .scaleAspectFit
+        l.translatesAutoresizingMaskIntoConstraints = false
+        
+        return l
+    }()
+    
     let usernameTF: UITextField = {
         let utf = UITextField()
         utf.placeholder = "Username"
@@ -46,12 +55,6 @@ class LoginController: UIViewController {
         
         UserDefaults.standard.set(true, forKey: Defaults.authentication.rawValue)
         dismiss(animated: true)
-//        let option: UIView.AnimationOptions = .transitionCrossDissolve
-//        let duration: TimeInterval = 0.3
-//        UIView.transition(with: view.window!, duration: duration, options: option) {
-//            self.view.window?.rootViewController = UINavigationController(rootViewController: ViewController())
-//
-//        }
 
     }
     
@@ -66,14 +69,13 @@ class LoginController: UIViewController {
         
         return sv
     }()
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupInputsView()
         
-        view.backgroundColor = UIColor.systemPink
+        view.backgroundColor = UIColor.hbGreen
 
     }
     
@@ -90,6 +92,7 @@ class LoginController: UIViewController {
     }
     
     fileprivate func setupInputsView() {
+        view.addSubview(logoView)
         inputsContainer.addArrangedSubview(usernameTF)
         inputsContainer.addArrangedSubview(spacer)
         inputsContainer.addArrangedSubview(passwordTF)
@@ -99,6 +102,10 @@ class LoginController: UIViewController {
         loginFormYContraint = inputsContainer.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         
         NSLayoutConstraint.activate([
+            logoView.widthAnchor.constraint(equalToConstant: 300),
+            logoView.heightAnchor.constraint(equalToConstant: 120),
+            logoView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            logoView.bottomAnchor.constraint(equalTo: inputsContainer.topAnchor, constant: -10),
             inputsContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             loginFormYContraint!,
             inputsContainer.widthAnchor.constraint(equalToConstant: 300),

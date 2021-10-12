@@ -45,6 +45,7 @@ class MenuController: UIViewController {
         titleView.text = "Menu"
         
         self.navigationItem.titleView = titleView
+
     }
     
     fileprivate func setupMenuTable() {

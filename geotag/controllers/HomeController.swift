@@ -27,7 +27,10 @@ class HomeController: UIViewController {
     
     let clubTable: UITableView = {
         let table = UITableView()
-        table.backgroundColor = UIColor(r: 123, g: 193, b: 67)
+        table.estimatedRowHeight = 300
+        table.rowHeight = UITableView.automaticDimension
+        table.backgroundColor = UIColor.hbGreen
+        table.separatorStyle = .none
         table.translatesAutoresizingMaskIntoConstraints = false
         
         return table
@@ -74,16 +77,22 @@ class HomeController: UIViewController {
     fileprivate func setupNavitationBar() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .hbOrange
+        appearance.backgroundColor = .hbGreen
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
         
-        navigationItem.title = "Nutrition Club"
+        let tv = UILabel()
+        tv.text = "Nutrition Club"
+        tv.textColor = .white
+        tv.font = UIFont.systemFont(ofSize: 16, weight: .bold)
         
-        let logoutBTN = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up"), style: .plain, target: self, action: #selector(logoutAction))
+        
+        navigationItem.titleView = tv
+        
+        let logoutBTN = UIBarButtonItem(image: UIImage(systemName: "power.circle.fill"), style: .plain, target: self, action: #selector(logoutAction))
         
         navigationItem.leftBarButtonItem = logoutBTN
-        navigationItem.leftBarButtonItem?.tintColor = .white
+        navigationItem.leftBarButtonItem?.tintColor = UIColor(r: 252, g: 108, b: 108)
         
         let searchBtn = UIBarButtonItem(image: UIImage(systemName: "doc.text.magnifyingglass"), style: .plain, target: self, action: #selector(searchClubs))
         
@@ -175,20 +184,37 @@ class HomeController: UIViewController {
     @objc func clearClubs() {
         print("clear clubs")
     }
+    
+
 
 }
 
 extension HomeController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        5
+        20
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: self.clubCellId, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: self.clubCellId, for: indexPath) as! ClubCell
+        if (indexPath.row % 2 == 0) {
+            cell.mapPin.tintColor = .lightGray
+        }
         return cell
     }
 }
 
 extension HomeController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
+        
+        let qc = VisitPrepareController()
+//        qc.modalPresentationStyle = .formSheet
+//        qc.preferredContentSize = CGSize(width: 500, height: 700)
+        let nav = UINavigationController(rootViewController: qc)
+        nav.modalPresentationStyle = .formSheet
+        present(nav, animated: true, completion: nil)
+
+    }
     
 }

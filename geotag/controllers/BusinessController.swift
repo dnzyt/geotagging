@@ -27,6 +27,11 @@ class BusinessController: UIViewController {
         navigationItem.title = "Business"
         
         setupTable()
+        setupNavigationBar()
+
+    }
+    
+    fileprivate func setupNavigationBar() {
 
     }
     
