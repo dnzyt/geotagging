@@ -10,15 +10,54 @@ import UIKit
 class MenuCell: UITableViewCell {
     
     let iconImageView: UIImageView = {
-        let i = UIImageView(frame: CGRect(x: 15, y: 15, width: 90, height: 90))
+        let i = UIImageView()
         i.image = UIImage(systemName: "house")
+        i.tintColor = .white
+        i.translatesAutoresizingMaskIntoConstraints = false
         return i
     }()
     
+    let mainLbl: UILabel = {
+        let l = UILabel()
+        l.text = "Business Methods"
+        l.translatesAutoresizingMaskIntoConstraints = false
+        l.textColor = .white
+        l.font = UIFont(name: "ChalkboardSE-Regular", size: 14)
+        
+        return l
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = .lightGray
-        addSubview(iconImageView)
+        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .clear
+        contentView.addSubview(iconImageView)
+        contentView.addSubview(mainLbl)
+
+
+        
+        NSLayoutConstraint.activate([
+            iconImageView.widthAnchor.constraint(equalToConstant: 50),
+            iconImageView.heightAnchor.constraint(greaterThanOrEqualToConstant: 50),
+            iconImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+            iconImageView.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 10),
+            iconImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            mainLbl.leftAnchor.constraint(equalTo: iconImageView.rightAnchor, constant: 10),
+            mainLbl.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+        ])
+    }
+    
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        if state.isSelected {
+            contentView.backgroundColor = .hbGreen
+            mainLbl.textColor = .white
+            iconImageView.tintColor = .white
+            
+        } else {
+            contentView.backgroundColor = .white
+            mainLbl.textColor = .hbGreen
+            iconImageView.tintColor = .hbGreen
+        }
+        
     }
     
     required init?(coder: NSCoder) {

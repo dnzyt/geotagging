@@ -8,13 +8,23 @@
 import UIKit
 
 class BusinessCell: UITableViewCell {
+        
+    private let bgContainer: UIView = {
+        let c = UIView()
+        c.translatesAutoresizingMaskIntoConstraints = false
+        c.backgroundColor = .hbGreen
+        c.layer.cornerRadius = 15
+        
+        return c
+    }()
     
     private let containerView: UIStackView = {
         let c = UIStackView()
         c.axis = .vertical
         c.translatesAutoresizingMaskIntoConstraints = false
-        c.backgroundColor = .lightGray
         c.alignment = .leading
+        c.spacing = 15
+        c.backgroundColor = .clear
         
         return c
     }()
@@ -22,19 +32,28 @@ class BusinessCell: UITableViewCell {
     let questionLbl: UILabel = {
         let ql = UILabel()
         ql.numberOfLines = 0
-        ql.font = UIFont.systemFont(ofSize: 20)
+        ql.font = UIFont(name: "GillSans-SemiBoldItalic", size: 22)
         ql.translatesAutoresizingMaskIntoConstraints = false
-        ql.backgroundColor = .orange
+        ql.textColor = .white
+        
 
         return ql
+    }()
+    
+    let seperator: UIView = {
+        let s = UIView()
+        s.translatesAutoresizingMaskIntoConstraints = false
+        s.backgroundColor = .white
+        return s
     }()
     
     let ansLbl: UILabel = {
         let al = UILabel()
         al.numberOfLines = 0
-        al.font = UIFont.systemFont(ofSize: 16)
+        al.font = UIFont(name: "HelveticaNeue-Light", size: 16)
         al.translatesAutoresizingMaskIntoConstraints = false
-        al.backgroundColor = .green
+        al.textColor = .darkGray
+
         
         return al
     }()
@@ -42,32 +61,46 @@ class BusinessCell: UITableViewCell {
     let commentLbl: UILabel = {
         let cl = UILabel()
         cl.numberOfLines = 0
-        cl.font = UIFont.systemFont(ofSize: 16)
+        cl.textColor = .darkGray
+        cl.font = UIFont.systemFont(ofSize: 12)
         cl.translatesAutoresizingMaskIntoConstraints = false
-        cl.backgroundColor = .yellow
+        cl.textAlignment = .right
         
         return cl
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
+        backgroundColor = .clear
+        selectionStyle = .none
         setupContent()
     }
     
 
     
     fileprivate func setupContent() {
-        contentView.addSubview(containerView)
+        contentView.addSubview(bgContainer)
+        
+        bgContainer.addSubview(containerView)
         containerView.addArrangedSubview(questionLbl)
+        containerView.addArrangedSubview(seperator)
         containerView.addArrangedSubview(ansLbl)
-        containerView.addArrangedSubview(commentLbl)
+        bgContainer.addSubview(commentLbl)
         
         NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            bgContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15),
+            bgContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            bgContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15),
+            bgContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            containerView.topAnchor.constraint(equalTo: bgContainer.topAnchor, constant: 10),
+            containerView.leftAnchor.constraint(equalTo: bgContainer.leftAnchor, constant: 10),
+            containerView.rightAnchor.constraint(equalTo: bgContainer.rightAnchor, constant: -10),
+            seperator.heightAnchor.constraint(equalToConstant: 1),
+            seperator.widthAnchor.constraint(equalTo: containerView.widthAnchor),
+            commentLbl.topAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 10),
+            commentLbl.rightAnchor.constraint(equalTo: bgContainer.rightAnchor, constant: -10),
+            commentLbl.bottomAnchor.constraint(equalTo: bgContainer.bottomAnchor, constant: -10),
+            commentLbl.widthAnchor.constraint(equalToConstant: 300)
         ])
         
     }

@@ -7,6 +7,8 @@
 
 import UIKit
 import MapKit
+import Reachability
+
 
 class HomeController: UIViewController {
     
@@ -55,6 +57,18 @@ class HomeController: UIViewController {
         
         setupNavitationBar()
         setupViews()
+        
+
+//        Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { timer in
+//            let reachability = try! Reachability()
+//            print("connection: --- \(reachability.connection)")
+//            if reachability.connection != .unavailable {
+//                print("internet connection available")
+//            } else {
+//                print("internet connection not available")
+//            }
+//        }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -92,7 +106,7 @@ class HomeController: UIViewController {
         let logoutBTN = UIBarButtonItem(image: UIImage(systemName: "power.circle.fill"), style: .plain, target: self, action: #selector(logoutAction))
         
         navigationItem.leftBarButtonItem = logoutBTN
-        navigationItem.leftBarButtonItem?.tintColor = UIColor(r: 252, g: 108, b: 108)
+        navigationItem.leftBarButtonItem?.tintColor = .hbPink
         
         let searchBtn = UIBarButtonItem(image: UIImage(systemName: "doc.text.magnifyingglass"), style: .plain, target: self, action: #selector(searchClubs))
         
@@ -209,8 +223,7 @@ extension HomeController: UITableViewDelegate {
 
         
         let qc = VisitPrepareController()
-//        qc.modalPresentationStyle = .formSheet
-//        qc.preferredContentSize = CGSize(width: 500, height: 700)
+
         let nav = UINavigationController(rootViewController: qc)
         nav.modalPresentationStyle = .formSheet
         present(nav, animated: true, completion: nil)

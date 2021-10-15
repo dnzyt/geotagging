@@ -18,5 +18,7 @@ extension UIColor {
     
     static let hbOrange = UIColor(r: 255, g: 165, b: 0)
     static let hbGreen = UIColor(r: 123, g: 193, b: 67)
+    static let hbPink = UIColor(r: 252, g: 108, b: 108)
+    static let hbBlue = UIColor(r: 51, g: 153, b: 255)
 
 }

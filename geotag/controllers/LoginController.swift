@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import SwiftyJSON
+import CoreData
 
 class LoginController: UIViewController {
     
@@ -53,8 +55,61 @@ class LoginController: UIViewController {
     
     @objc fileprivate func loginAction() {
         
-        UserDefaults.standard.set(true, forKey: Defaults.authentication.rawValue)
-        dismiss(animated: true)
+        let url = URL(string: "https://mocki.io/v1/0b3af078-c561-4b74-9ab7-6e4406f0e75c")
+        URLSession.shared.dataTask(with: url!) { data, response, error in
+//            guard let data = data else { return }
+            
+            DispatchQueue.main.async {
+                guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+                let context = appDelegate.persistentContainer.viewContext
+                
+                let fetchRequest = QuestionInfo.fetchRequest()
+                do {
+                    let result = try context.fetch(fetchRequest) as [QuestionInfo]
+                    result.forEach {q in
+                        print("key: \(q.questionKey!)")
+                        print("label: \(q.label!)")
+                        for l in q.items! {
+                            let label = l as! LabelInfo
+                            print("label key: \(label.labelKey!)")
+                            print("label value: \(label.labelValue!)")
+                        }
+                        print("----------")
+                    }
+                } catch {
+                    print("fetch failed")
+                }
+                
+//                let json = try! JSON(data: data)
+//                print("json: \(json)")
+//                for (_, subJson): (String, JSON) in json {
+//                    let question = QuestionInfo(context: context)
+//                    question.categoryId = subJson["categoryId"].stringValue
+//                    question.label = subJson["label"].stringValue
+//                    question.needComment = subJson["needComment"].stringValue
+//                    question.questionKey = subJson["questionKey"].stringValue
+//                    question.questionType = subJson["questionType"].stringValue
+//                    let items = subJson["items"].arrayValue
+//                    for i in items {
+//                        let dropdownOption = LabelInfo(context: context)
+//                        dropdownOption.labelKey = i["itemKey"].stringValue
+//                        dropdownOption.labelValue = i["itemValue"].stringValue
+//                        question.addToItems(dropdownOption)
+//                    }
+//                }
+//                do {
+//                    try context.save()
+//                    print("saved")
+//
+//                } catch {
+//                    print("saving failed")
+//                }
+            }
+        }.resume()
+        
+        
+//        UserDefaults.standard.set(true, forKey: Defaults.authentication.rawValue)
+//        dismiss(animated: true)
 
     }
     

@@ -89,7 +89,7 @@ class VisitPrepareController: UIViewController {
             let split = HBSplitViewController(style: .doubleColumn)
             split.preferredDisplayMode = .oneBesideSecondary
             split.preferredSplitBehavior = .tile
-            split.preferredPrimaryColumnWidth = 160
+            split.preferredPrimaryColumnWidth = 240
             split.displayModeButtonVisibility = .never
             window.rootViewController = split
         }

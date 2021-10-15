@@ -10,8 +10,8 @@ import UIKit
 class HBSplitViewController: UISplitViewController {
     
     var menuController: MenuController?
-    var businessController: BusinessController?
-    var trainingController: TrainingController?
+    var businessNavController: UINavigationController?
+    var trainingNavController: UINavigationController?
     
     var cancelVisitBtn: UIBarButtonItem?
     var submitBtn: UIBarButtonItem?
@@ -20,27 +20,30 @@ class HBSplitViewController: UISplitViewController {
         super.viewDidLoad()
         
         cancelVisitBtn = UIBarButtonItem(image: UIImage(systemName: "trash.fill"), style: .plain, target: self, action: #selector(cacelVisit))
-        cancelVisitBtn!.tintColor = .green
+        cancelVisitBtn!.tintColor = .hbPink
         
         submitBtn = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up"), style: .plain, target: self, action: #selector(submit))
-        submitBtn?.tintColor = .systemPink
+        submitBtn?.tintColor = .white
         
         menuController = MenuController()
         menuController?.delegate = self
-        businessController = BusinessController()
-        businessController?.navigationItem.leftBarButtonItem = cancelVisitBtn
-        businessController?.navigationItem.rightBarButtonItem = submitBtn
-        trainingController = TrainingController()
-        trainingController?.navigationItem.leftBarButtonItem = cancelVisitBtn
-        trainingController?.navigationItem.rightBarButtonItem = submitBtn
         
-
+        
+        let businessController = BusinessController()
+        businessController.navigationItem.leftBarButtonItem = cancelVisitBtn
+        businessController.navigationItem.rightBarButtonItem = submitBtn
+        businessNavController = UINavigationController(rootViewController: businessController)
+        
+        let trainingController = TrainingController()
+        trainingController.navigationItem.leftBarButtonItem = cancelVisitBtn
+        trainingController.navigationItem.rightBarButtonItem = submitBtn
+        trainingNavController = UINavigationController(rootViewController: trainingController)
 
         
         
         
         setViewController(menuController, for: .primary)
-        setViewController(UINavigationController(rootViewController: businessController!), for: .secondary)
+        setViewController(businessNavController, for: .secondary)
         
         self.delegate = self
         
@@ -77,14 +80,14 @@ extension HBSplitViewController: MenuControllerDelegate {
         var currentVC: UIViewController?
         switch index {
         case 0:
-            currentVC = businessController
+            currentVC = businessNavController
         case 1:
-            currentVC = trainingController
+            currentVC = trainingNavController
         default:
-            currentVC = businessController
+            currentVC = businessNavController
         }
         
-        showDetailViewController(UINavigationController(rootViewController: currentVC!), sender: self)
+        showDetailViewController(currentVC!, sender: self)
         hide(.primary)
         
     }

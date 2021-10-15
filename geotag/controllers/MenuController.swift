@@ -21,7 +21,9 @@ class MenuController: UIViewController {
         let mt = UITableView()
         mt.translatesAutoresizingMaskIntoConstraints = false
         mt.register(MenuCell.self, forCellReuseIdentifier: MenuController.cellId)
-        mt.backgroundColor = .green
+        mt.backgroundColor = .white
+        mt.estimatedRowHeight = 90
+        mt.rowHeight = UITableView.automaticDimension
         
         return mt
     }()
@@ -36,8 +38,8 @@ class MenuController: UIViewController {
     fileprivate func setupNavigationBar() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .hbOrange
-        
+        appearance.backgroundColor = .hbGreen
+
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
         let titleView = UILabel()
@@ -71,7 +73,21 @@ extension MenuController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: MenuController.cellId, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: MenuController.cellId, for: indexPath) as! MenuCell
+        if indexPath.row == 0 {
+            cell.iconImageView.image = UIImage(systemName: "mail.stack")
+            cell.mainLbl.text = "Business Method"
+        } else if indexPath.row == 1 {
+            cell.iconImageView.image = UIImage(systemName: "wallet.pass")
+            cell.mainLbl.text = "Training System"
+        } else if indexPath.row == 2 {
+            cell.iconImageView.image = UIImage(systemName: "printer.dotmatrix")
+            cell.mainLbl.text = "Tracking & Checklist"
+        } else if indexPath.row == 3 {
+            cell.iconImageView.image = UIImage(systemName: "suitcase")
+            cell.mainLbl.text = "Feedback"
+        }
+        
         return cell
     }
     
@@ -79,9 +95,9 @@ extension MenuController: UITableViewDataSource {
 }
 
 extension MenuController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 120
-    }
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        return 120
+//    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         delegate?.menuTable(tableView, didSelectItemAt: indexPath.row)
