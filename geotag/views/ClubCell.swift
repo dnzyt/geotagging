@@ -9,6 +9,14 @@ import UIKit
 
 class ClubCell: UITableViewCell {
     
+    var club: ClubInfo? {
+        didSet {
+            ckLbl.text = club!.clubKey
+            addressContentbl.text = club!.address
+            clubNameContentsLbl.text = club!.clubName
+        }
+    }
+    
     let topStackView: UIStackView = {
         let t = UIStackView()
         t.axis = .horizontal

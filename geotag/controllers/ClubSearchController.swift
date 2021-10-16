@@ -6,11 +6,20 @@
 //
 
 import UIKit
+import SwiftyJSON
+
+protocol ClubSearchControllerDelegate: AnyObject {
+    func searchStarted()
+    func clubsSearched(_ clubs: [ClubInfo], withResult res: Bool)
+}
+
 
 class ClubSearchController: UIViewController {
+
     static let clubKeyTag = 1
     static let memberIdTag = 2
     
+    weak var delegate: ClubSearchControllerDelegate?
     var searchContent: String?
     var activeField = 0
     
@@ -62,18 +71,7 @@ class ClubSearchController: UIViewController {
         
         return sv
     }()
-    
-    let completion: (String) -> Void
-    
-    init(completion: @escaping (String) -> Void) {
-        self.completion = completion
 
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     
     override func viewDidLoad() {
@@ -113,15 +111,99 @@ class ClubSearchController: UIViewController {
     }
     
     @objc func searchClub() {
+        var dict = [String: String]()
         if let content = searchContent {
             if activeField == 1 {
-                print("fetching by club key ...")
-                completion(content)
+                dict["clubKey"] = content
+                dict["dsId"] = ""
             } else if activeField == 2 {
-                print("fetching by member id ...")
-                completion(content)
+                dict["clubKey"] = ""
+                dict["dsId"] = content
             }
+            delegate?.searchStarted()
+        } else {
+            return
         }
+        
+        
+        
+        guard let url = URL(string: Constatns.url + "/clubs") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: dict, options: []) else { return }
+        request.httpBody = httpBody
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let _ = error {
+                self.delegate?.clubsSearched([], withResult: false)
+                return
+            }
+            if let data = data {
+                DispatchQueue.main.async {
+                    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+                    let context = appDelegate.persistentContainer.viewContext
+                    
+                    var existingClubs = [ClubInfo]()
+                    let fetchRequest = ClubInfo.fetchRequest()
+                    do {
+                        let result = try context.fetch(fetchRequest) as [ClubInfo]
+                        existingClubs.append(contentsOf: result)
+                    } catch {
+                        print("load clubs from local failed")
+                    }
+                    
+                    
+                    let json = try! JSON(data: data)
+                    print("json: \(json)")
+                    var res = [ClubInfo]()
+                    for (_, subJson): (String, JSON) in json {
+                        let ck = subJson["clubKey"].stringValue
+                        var exists = false
+                        for club in existingClubs {
+                            if let clubKey = club.clubKey {
+                                if clubKey == ck {
+                                    exists = true
+                                    break
+                                }
+                            }
+                        }
+                        if exists {
+                            continue
+                        }
+                        
+                        let club = ClubInfo(context: context)
+                        club.clubKey = subJson["clubKey"].stringValue
+                        club.clubName = subJson["clubName"].stringValue
+                        club.address = subJson["address"].stringValue
+                        club.city = subJson["city"].stringValue
+                        club.province = subJson["province"].stringValue
+                        club.zip = subJson["zip"].stringValue
+                        club.phone = subJson["phone"].stringValue
+                        club.clubType = subJson["clubType"].stringValue
+                        club.clubStatus = subJson["clubStatus"].stringValue
+                        club.openDate = subJson["opendate"].stringValue
+                        club.primaryDsId = subJson["primaryDsId"].stringValue
+                        club.primaryDsName = subJson["primaryDsName"].stringValue
+                        club.uplineName = subJson["uplineName"].stringValue
+                        club.geocode = subJson["geocode"].stringValue
+                        res.append(club)
+                    }
+                    
+                    do {
+                        try context.save()
+                        self.delegate?.clubsSearched(res, withResult: true)
+
+                    } catch {
+                        print("saving clubs failed")
+                        self.delegate?.clubsSearched(res, withResult: false)
+
+                    }
+                    
+                }
+            }
+        }.resume()
 
 
         dismiss(animated: true)

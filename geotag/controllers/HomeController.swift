@@ -8,17 +8,20 @@
 import UIKit
 import MapKit
 import Reachability
+import JGProgressHUD
 
 
 class HomeController: UIViewController {
     
     
-    
+    let hud = JGProgressHUD()
     let clubCellId = "clubCellId"
     
     private var compactConstraints: [NSLayoutConstraint] = []
     private var regularConstraints: [NSLayoutConstraint] = []
     private var sharedConstraints: [NSLayoutConstraint] = []
+    
+    private var clubs: [ClubInfo] = []
     
     let containerView: UIView = {
         let c = UIView()
@@ -54,10 +57,22 @@ class HomeController: UIViewController {
         clubTable.dataSource = self
         clubTable.delegate = self
         
+        mapView.delegate = self
+        
         
         setupNavitationBar()
         setupViews()
         
+        
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        let context = appDelegate.persistentContainer.viewContext
+        let fetchRequest = ClubInfo.fetchRequest()
+        do {
+            let result = try context.fetch(fetchRequest) as [ClubInfo]
+            clubs.append(contentsOf: result)
+        } catch {
+            print("load clubs from local failed")
+        }
 
 //        Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { timer in
 //            let reachability = try! Reachability()
@@ -84,7 +99,9 @@ class HomeController: UIViewController {
             let login = LoginController()
             login.modalPresentationStyle = .fullScreen
             present(login, animated: true)
+            return
         }
+        refreshMap()
 
     }
     
@@ -116,6 +133,23 @@ class HomeController: UIViewController {
         navigationItem.rightBarButtonItems = [clearBtn, searchBtn]
         
 
+    }
+    
+    private func refreshMap() {
+        mapView.removeAnnotations(mapView.annotations)
+        
+        clubs.forEach { c in
+            if let geocode = c.geocode {
+                let comps = geocode.components(separatedBy: ",")
+                let lat = Double(comps[0])
+                let long = Double(comps[1])
+                
+                let annotation = Artwork(title: c.clubKey, locationName: c.address, discipline: nil, coordinate: CLLocationCoordinate2D(latitude: lat!, longitude: long!), club: c)
+                mapView.addAnnotation(annotation)
+                
+            }
+        }
+        mapView.fitAll()
     }
     
     
@@ -185,9 +219,8 @@ class HomeController: UIViewController {
     }
     
     @objc func searchClubs(sender: UIBarButtonItem) {
-        let vc = ClubSearchController { clubKey in
-            print("club fetched \(clubKey)")
-        }
+        let vc = ClubSearchController()
+        vc.delegate = self
         vc.modalPresentationStyle = .popover
         vc.preferredContentSize = CGSize(width:340, height:180)
         
@@ -205,29 +238,77 @@ class HomeController: UIViewController {
 
 extension HomeController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        20
+        clubs.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: self.clubCellId, for: indexPath) as! ClubCell
+        cell.club = clubs[indexPath.row]
+        
+        
         if (indexPath.row % 2 == 0) {
             cell.mapPin.tintColor = .lightGray
         }
         return cell
+    }
+    
+    private func showPrepareController(club: ClubInfo) {
+        let qc = VisitPrepareController()
+        qc.club = club
+        qc.isModalInPresentation = true
+
+        let nav = UINavigationController(rootViewController: qc)
+        nav.modalPresentationStyle = .formSheet
+        present(nav, animated: true, completion: nil)
     }
 }
 
 extension HomeController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
-        
-        let qc = VisitPrepareController()
-
-        let nav = UINavigationController(rootViewController: qc)
-        nav.modalPresentationStyle = .formSheet
-        present(nav, animated: true, completion: nil)
-
+        showPrepareController(club: clubs[indexPath.row])
     }
     
+}
+
+extension HomeController: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        guard let annotation = view.annotation as? Artwork else { return }
+        showPrepareController(club: annotation.club!)
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        let annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "annotationView")
+        annotationView.canShowCallout = true
+        annotationView.largeContentTitle = "hello"
+        annotationView.calloutOffset = CGPoint(x: -5, y: 5)
+        annotationView.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+
+        return annotationView
+    }
+}
+
+extension HomeController: ClubSearchControllerDelegate {
+    func clubsSearched(_ cbs: [ClubInfo], withResult res: Bool) {
+        if res {
+            clubs.append(contentsOf: cbs)
+            
+            self.clubTable.reloadData()
+            self.refreshMap()
+            hud.dismiss(animated: true)
+        } else {
+            hud.textLabel.text = "Search Failed."
+            hud.indicatorView = JGProgressHUDErrorIndicatorView()
+            hud.indicatorView?.tintColor = .red
+            hud.dismiss(afterDelay: 2)
+            print("clubs are empty")
+        }
+    }
+    
+    func searchStarted() {
+        DispatchQueue.main.async {
+            self.hud.textLabel.text = "Searching clubs"
+            self.hud.show(in: self.view)
+        }
+    }
 }

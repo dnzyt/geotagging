@@ -8,10 +8,12 @@
 import UIKit
 import SwiftyJSON
 import CoreData
+import JGProgressHUD
 
 class LoginController: UIViewController {
     
     var loginFormYContraint: NSLayoutConstraint?
+    let hud = JGProgressHUD()
     
     let logoView: UIImageView = {
         let l = UIImageView()
@@ -55,62 +57,83 @@ class LoginController: UIViewController {
     
     @objc fileprivate func loginAction() {
         
-        let url = URL(string: "https://mocki.io/v1/0b3af078-c561-4b74-9ab7-6e4406f0e75c")
-        URLSession.shared.dataTask(with: url!) { data, response, error in
-//            guard let data = data else { return }
+        UserDefaults.standard.set(true, forKey: Defaults.authentication.rawValue)
+        let questionsDownloaded = UserDefaults.standard.bool(forKey: Defaults.questions_downloaded.rawValue)
+        if questionsDownloaded {
+            print("questions are already downloaded.")
+            dismiss(animated: true)
+        } else {
             
             DispatchQueue.main.async {
-                guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-                let context = appDelegate.persistentContainer.viewContext
-                
-                let fetchRequest = QuestionInfo.fetchRequest()
-                do {
-                    let result = try context.fetch(fetchRequest) as [QuestionInfo]
-                    result.forEach {q in
-                        print("key: \(q.questionKey!)")
-                        print("label: \(q.label!)")
-                        for l in q.items! {
-                            let label = l as! LabelInfo
-                            print("label key: \(label.labelKey!)")
-                            print("label value: \(label.labelValue!)")
-                        }
-                        print("----------")
-                    }
-                } catch {
-                    print("fetch failed")
+                self.hud.textLabel.text = "Authenticating..."
+                self.hud.show(in: self.view)
+            }
+            downloadQuestions()
+            
+        }
+
+    }
+    
+    private func downloadQuestions() {
+        let url = URL(string: Constatns.url + "/questions")
+        URLSession.shared.dataTask(with: url!) { data, response, error in
+            
+            if let response = response as? HTTPURLResponse, response.statusCode != 200 {
+                DispatchQueue.main.async {
+                    self.hud.textLabel.text = "Authentication Failed"
+                    self.hud.indicatorView = JGProgressHUDErrorIndicatorView()
+                    self.hud.indicatorView?.tintColor = .red
+                    self.hud.dismiss(afterDelay: 2)
                 }
-                
-//                let json = try! JSON(data: data)
-//                print("json: \(json)")
-//                for (_, subJson): (String, JSON) in json {
-//                    let question = QuestionInfo(context: context)
-//                    question.categoryId = subJson["categoryId"].stringValue
-//                    question.label = subJson["label"].stringValue
-//                    question.needComment = subJson["needComment"].stringValue
-//                    question.questionKey = subJson["questionKey"].stringValue
-//                    question.questionType = subJson["questionType"].stringValue
-//                    let items = subJson["items"].arrayValue
-//                    for i in items {
-//                        let dropdownOption = LabelInfo(context: context)
-//                        dropdownOption.labelKey = i["itemKey"].stringValue
-//                        dropdownOption.labelValue = i["itemValue"].stringValue
-//                        question.addToItems(dropdownOption)
-//                    }
-//                }
-//                do {
-//                    try context.save()
-//                    print("saved")
-//
-//                } catch {
-//                    print("saving failed")
-//                }
+                return
+            }
+            
+            guard let data = data else { return }
+            
+            DispatchQueue.main.async {
+                let res = self.storeQuestions(data: data)
+                self.hud.dismiss(animated: true)
+                if res {
+                    self.dismiss(animated: true)
+                } else {
+                    print("download questions failed")
+                }
             }
         }.resume()
-        
-        
-//        UserDefaults.standard.set(true, forKey: Defaults.authentication.rawValue)
-//        dismiss(animated: true)
+    }
+    
 
+    
+    private func storeQuestions(data: Data) -> Bool {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return false }
+        let context = appDelegate.persistentContainer.viewContext
+        
+        let json = try! JSON(data: data)
+        print("json: \(json)")
+        for (_, subJson): (String, JSON) in json {
+            let question = QuestionInfo(context: context)
+            question.categoryId = subJson["categoryId"].stringValue
+            question.label = subJson["label"].stringValue
+            question.needComment = subJson["needComment"].stringValue
+            question.questionKey = subJson["questionKey"].stringValue
+            question.questionType = subJson["questionType"].stringValue
+            let items = subJson["items"].arrayValue
+            for i in items {
+                let dropdownOption = LabelInfo(context: context)
+                dropdownOption.labelKey = i["itemKey"].stringValue
+                dropdownOption.labelValue = i["itemValue"].stringValue
+                question.addToItems(dropdownOption)
+            }
+        }
+        do {
+            try context.save()
+            UserDefaults.standard.set(true, forKey: Defaults.questions_downloaded.rawValue)
+            return true
+
+        } catch {
+            print("saving questions failed")
+            return false
+        }
     }
     
     let inputsContainer: UIStackView = {
@@ -180,6 +203,4 @@ class LoginController: UIViewController {
 
 }
 
-enum Defaults: String {
-    case authentication = "AUTHENTICATION"
-}
+

@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "623FF49527187A970033C164"
-               BuildableName = "geotag copy.app"
+               BuildableName = "geotagdev.app"
                BlueprintName = "geotagdev"
                ReferencedContainer = "container:geotag.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "623FF49527187A970033C164"
-            BuildableName = "geotag copy.app"
+            BuildableName = "geotagdev.app"
             BlueprintName = "geotagdev"
             ReferencedContainer = "container:geotag.xcodeproj">
          </BuildableReference>
@@ -63,7 +63,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "623FF49527187A970033C164"
-            BuildableName = "geotag copy.app"
+            BuildableName = "geotagdev.app"
             BlueprintName = "geotagdev"
             ReferencedContainer = "container:geotag.xcodeproj">
          </BuildableReference>

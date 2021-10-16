@@ -2,7 +2,7 @@
 //  LabelInfo+CoreDataProperties.swift
 //  geotag
 //
-//  Created by Ningze Dai on 10/14/21.
+//  Created by Ningze Dai on 10/15/21.
 //
 //
 
@@ -18,6 +18,7 @@ extension LabelInfo {
 
     @NSManaged public var labelKey: String?
     @NSManaged public var labelValue: String?
+    @NSManaged public var question: QuestionInfo?
 
 }
 

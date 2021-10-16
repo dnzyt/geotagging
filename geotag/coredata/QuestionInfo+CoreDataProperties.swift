@@ -2,7 +2,7 @@
 //  QuestionInfo+CoreDataProperties.swift
 //  geotag
 //
-//  Created by Ningze Dai on 10/14/21.
+//  Created by Ningze Dai on 10/15/21.
 //
 //
 
@@ -16,12 +16,12 @@ extension QuestionInfo {
         return NSFetchRequest<QuestionInfo>(entityName: "QuestionInfo")
     }
 
-    @NSManaged public var questionKey: String?
-    @NSManaged public var label: String?
-    @NSManaged public var questionType: String?
     @NSManaged public var categoryId: String?
-    @NSManaged public var needComment: String?
     @NSManaged public var countryCode: String?
+    @NSManaged public var label: String?
+    @NSManaged public var needComment: String?
+    @NSManaged public var questionKey: String?
+    @NSManaged public var questionType: String?
     @NSManaged public var items: NSOrderedSet?
 
 }

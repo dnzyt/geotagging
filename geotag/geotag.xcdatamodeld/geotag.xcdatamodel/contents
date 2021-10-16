@@ -5,6 +5,7 @@
         <attribute name="city" optional="YES" attributeType="String"/>
         <attribute name="clubKey" optional="YES" attributeType="String"/>
         <attribute name="clubName" optional="YES" attributeType="String"/>
+        <attribute name="clubStatus" optional="YES" attributeType="String"/>
         <attribute name="clubType" optional="YES" attributeType="String"/>
         <attribute name="geocode" optional="YES" attributeType="String" valueTransformerName=""/>
         <attribute name="geoUpdated" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
@@ -19,6 +20,7 @@
     <entity name="LabelInfo" representedClassName=".LabelInfo" syncable="YES">
         <attribute name="labelKey" optional="YES" attributeType="String"/>
         <attribute name="labelValue" optional="YES" attributeType="String"/>
+        <relationship name="question" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="QuestionInfo" inverseName="items" inverseEntity="QuestionInfo"/>
     </entity>
     <entity name="QuestionInfo" representedClassName=".QuestionInfo" syncable="YES">
         <attribute name="categoryId" optional="YES" attributeType="String"/>
@@ -27,11 +29,11 @@
         <attribute name="needComment" optional="YES" attributeType="String"/>
         <attribute name="questionKey" optional="YES" attributeType="String"/>
         <attribute name="questionType" optional="YES" attributeType="String"/>
-        <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="LabelInfo"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="LabelInfo" inverseName="question" inverseEntity="LabelInfo"/>
     </entity>
     <elements>
-        <element name="LabelInfo" positionX="-85.4658203125" positionY="90.659423828125" width="128" height="73"/>
-        <element name="QuestionInfo" positionX="-444.5263671875" positionY="-48.0234375" width="196.4769287109375" height="148"/>
-        <element name="ClubInfo" positionX="-101.585693359375" positionY="-65.2974853515625" width="128" height="253"/>
+        <element name="ClubInfo" positionX="27.3544921875" positionY="-323.0083618164062" width="128" height="268"/>
+        <element name="LabelInfo" positionX="86.150634765625" positionY="82.04071044921875" width="131.949462890625" height="88"/>
+        <element name="QuestionInfo" positionX="-458.570556640625" positionY="-62.7401123046875" width="196.4769287109375" height="148"/>
     </elements>
 </model>
