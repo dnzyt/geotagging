@@ -33,6 +33,8 @@ class MenuController: UIViewController {
         
         setupNavigationBar()
         setupMenuTable()
+        let indexPath = IndexPath(row: 0, section: 0)
+        menuTable.selectRow(at: indexPath, animated: false, scrollPosition: .none)
     }
     
     fileprivate func setupNavigationBar() {

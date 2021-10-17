@@ -8,6 +8,20 @@
 import UIKit
 
 class BusinessCell: UITableViewCell {
+    
+    var answer: AnswerInfo? {
+        didSet {
+            questionLbl.text = answer?.label
+            var ans = ""
+            for idx in answer!.ans! {
+                let item = answer?.items?.array[idx] as! DropDownItem
+                ans.append(item.labelValue!)
+                ans.append("\n")
+            }
+            ansLbl.text = ans
+            commentLbl.text = answer?.comment
+        }
+    }
         
     private let bgContainer: UIView = {
         let c = UIView()

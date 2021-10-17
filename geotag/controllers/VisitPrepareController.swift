@@ -85,7 +85,6 @@ class VisitPrepareController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         stopLocationManager()
-        print("stop location manager")
     }
     
     private func setupNavigation() {
@@ -122,6 +121,11 @@ class VisitPrepareController: UIViewController {
     }
     
     @objc func startVisit() {
+        guard let answers = prepareQuestions() else { return }
+        
+        guard let businessAnswers = answers["business"] else { return }
+        
+        
         guard let window = self.view.window else { return }
         UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve) {
             let split = HBSplitViewController(style: .doubleColumn)
@@ -129,9 +133,56 @@ class VisitPrepareController: UIViewController {
             split.preferredSplitBehavior = .tile
             split.preferredPrimaryColumnWidth = 240
             split.displayModeButtonVisibility = .never
+            
+            split.businessController.answers = businessAnswers
+            
             window.rootViewController = split
         }
     }
+    
+    
+    private func prepareQuestions() -> [String: [AnswerInfo]]? {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return nil }
+        let context = appDelegate.persistentContainer.viewContext
+        
+        var answers = [String: [AnswerInfo]]()
+        
+        let fq = QuestionInfo.fetchRequest()
+        var businessCategory = [AnswerInfo]()
+        if let res = try? context.fetch(fq) {
+            for q in res {
+                if q.categoryId == "1" {
+                    let ans = AnswerInfo(context: context)
+                    ans.ans = []
+                    ans.categoryId = q.categoryId
+                    ans.categoryId = q.countryCode
+                    ans.questionKey = q.questionKey
+                    ans.questionType = q.questionType
+                    ans.label = q.label
+                    ans.needComment = q.needComment
+                    for item in q.items?.array as! [LabelInfo] {
+                        let dropDownItem = DropDownItem(context: context)
+                        dropDownItem.labelKey = item.labelKey
+                        dropDownItem.labelValue = item.labelValue
+                        ans.addToItems(dropDownItem)
+                    }
+                    businessCategory.append(ans)
+                }
+            }
+        }
+        
+        answers["business"] = businessCategory
+        
+        do {
+            try context.save()
+        } catch {
+            print("prepare answers failed")
+            return nil
+        }
+        
+        return answers
+    }
+    
     
     @objc func getLocation() {
         let authStatus = locationManager.authorizationStatus
@@ -165,6 +216,7 @@ class VisitPrepareController: UIViewController {
         if updatingLocation {
             locationManager.stopUpdatingLocation()
             updatingLocation = false
+            print("stop location manager")
         }
     }
 

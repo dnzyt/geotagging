@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19206" systemVersion="20G165" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="AnswerInfo" representedClassName="AnswerInfo" syncable="YES">
+        <attribute name="ans" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[Int]"/>
+        <attribute name="categoryId" optional="YES" attributeType="String"/>
+        <attribute name="comment" optional="YES" attributeType="String"/>
+        <attribute name="countryCode" optional="YES" attributeType="String"/>
+        <attribute name="label" optional="YES" attributeType="String"/>
+        <attribute name="needComment" optional="YES" attributeType="String"/>
+        <attribute name="questionKey" optional="YES" attributeType="String"/>
+        <attribute name="questionType" optional="YES" attributeType="String"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="DropDownItem" inverseName="answerInfo" inverseEntity="DropDownItem"/>
+    </entity>
     <entity name="ClubInfo" representedClassName=".ClubInfo" syncable="YES">
         <attribute name="address" optional="YES" attributeType="String"/>
         <attribute name="city" optional="YES" attributeType="String"/>
@@ -17,6 +28,11 @@
         <attribute name="uplineName" optional="YES" attributeType="String"/>
         <attribute name="zip" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="DropDownItem" representedClassName="DropDownItem" syncable="YES">
+        <attribute name="labelKey" optional="YES" attributeType="String"/>
+        <attribute name="labelValue" optional="YES" attributeType="String"/>
+        <relationship name="answerInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AnswerInfo" inverseName="items" inverseEntity="AnswerInfo"/>
+    </entity>
     <entity name="LabelInfo" representedClassName=".LabelInfo" syncable="YES">
         <attribute name="labelKey" optional="YES" attributeType="String"/>
         <attribute name="labelValue" optional="YES" attributeType="String"/>
@@ -32,7 +48,9 @@
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="LabelInfo" inverseName="question" inverseEntity="LabelInfo"/>
     </entity>
     <elements>
+        <element name="AnswerInfo" positionX="-261" positionY="-171" width="128" height="164"/>
         <element name="ClubInfo" positionX="27.3544921875" positionY="-323.0083618164062" width="128" height="268"/>
+        <element name="DropDownItem" positionX="-252" positionY="-162" width="128" height="74"/>
         <element name="LabelInfo" positionX="86.150634765625" positionY="82.04071044921875" width="131.949462890625" height="88"/>
         <element name="QuestionInfo" positionX="-458.570556640625" positionY="-62.7401123046875" width="196.4769287109375" height="148"/>
     </elements>

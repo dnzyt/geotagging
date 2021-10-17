@@ -30,11 +30,9 @@
 		62249B8427093CA70040E177 /* ClubSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62249B8327093CA70040E177 /* ClubSearchController.swift */; };
 		623233E62705475A0068A21B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623233E52705475A0068A21B /* AppDelegate.swift */; };
 		623233E82705475A0068A21B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623233E72705475A0068A21B /* SceneDelegate.swift */; };
-		623233F02705475A0068A21B /* geotag.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 623233EE2705475A0068A21B /* geotag.xcdatamodeld */; };
 		623233F22705475B0068A21B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 623233F12705475B0068A21B /* Assets.xcassets */; };
 		623233F52705475B0068A21B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 623233F32705475B0068A21B /* LaunchScreen.storyboard */; };
 		623FF49927187A970033C164 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623233E52705475A0068A21B /* AppDelegate.swift */; };
-		623FF49A27187A970033C164 /* geotag.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 623233EE2705475A0068A21B /* geotag.xcdatamodeld */; };
 		623FF49B27187A970033C164 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623233E72705475A0068A21B /* SceneDelegate.swift */; };
 		623FF49C27187A970033C164 /* TrainingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625D9751270A102100B138CD /* TrainingController.swift */; };
 		623FF49D27187A970033C164 /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625D974B2709FE8F00B138CD /* MenuController.swift */; };
@@ -68,6 +66,16 @@
 		625D9752270A102100B138CD /* TrainingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625D9751270A102100B138CD /* TrainingController.swift */; };
 		625D9754270A4B4700B138CD /* BusinessCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625D9753270A4B4700B138CD /* BusinessCell.swift */; };
 		625D9756270A557700B138CD /* QuestionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625D9755270A557700B138CD /* QuestionController.swift */; };
+		628558C1271B897A001A93C0 /* geotag.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 623233EE2705475A0068A21B /* geotag.xcdatamodeld */; };
+		628558C2271B8984001A93C0 /* geotag.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 623233EE2705475A0068A21B /* geotag.xcdatamodeld */; };
+		628558C7271B89A9001A93C0 /* DropDownItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 628558C3271B89A9001A93C0 /* DropDownItem+CoreDataClass.swift */; };
+		628558C8271B89A9001A93C0 /* DropDownItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 628558C3271B89A9001A93C0 /* DropDownItem+CoreDataClass.swift */; };
+		628558C9271B89A9001A93C0 /* DropDownItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 628558C4271B89A9001A93C0 /* DropDownItem+CoreDataProperties.swift */; };
+		628558CA271B89A9001A93C0 /* DropDownItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 628558C4271B89A9001A93C0 /* DropDownItem+CoreDataProperties.swift */; };
+		628558CB271B89A9001A93C0 /* AnswerInfo+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 628558C5271B89A9001A93C0 /* AnswerInfo+CoreDataClass.swift */; };
+		628558CC271B89A9001A93C0 /* AnswerInfo+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 628558C5271B89A9001A93C0 /* AnswerInfo+CoreDataClass.swift */; };
+		628558CD271B89A9001A93C0 /* AnswerInfo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 628558C6271B89A9001A93C0 /* AnswerInfo+CoreDataProperties.swift */; };
+		628558CE271B89A9001A93C0 /* AnswerInfo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 628558C6271B89A9001A93C0 /* AnswerInfo+CoreDataProperties.swift */; };
 		62A41EBA2716359700241226 /* AnswerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A41EB92716359700241226 /* AnswerCell.swift */; };
 		62B56CED271A521800A58ACC /* JGProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 62B56CEC271A521800A58ACC /* JGProgressHUD */; };
 		62B56CEF271A539B00A58ACC /* JGProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 62B56CEE271A539B00A58ACC /* JGProgressHUD */; };
@@ -110,6 +118,10 @@
 		625D9751270A102100B138CD /* TrainingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingController.swift; sourceTree = "<group>"; };
 		625D9753270A4B4700B138CD /* BusinessCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessCell.swift; sourceTree = "<group>"; };
 		625D9755270A557700B138CD /* QuestionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionController.swift; sourceTree = "<group>"; };
+		628558C3271B89A9001A93C0 /* DropDownItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DropDownItem+CoreDataClass.swift"; sourceTree = "<group>"; };
+		628558C4271B89A9001A93C0 /* DropDownItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DropDownItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		628558C5271B89A9001A93C0 /* AnswerInfo+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnswerInfo+CoreDataClass.swift"; sourceTree = "<group>"; };
+		628558C6271B89A9001A93C0 /* AnswerInfo+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnswerInfo+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		62A41EB92716359700241226 /* AnswerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerCell.swift; sourceTree = "<group>"; };
 		62B56CF0271A661900A58ACC /* Artwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Artwork.swift; sourceTree = "<group>"; };
 		62EC11CD27177BB500D5B5AA /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
@@ -224,6 +236,10 @@
 		623FF51D271901F80033C164 /* coredata */ = {
 			isa = PBXGroup;
 			children = (
+				628558C3271B89A9001A93C0 /* DropDownItem+CoreDataClass.swift */,
+				628558C4271B89A9001A93C0 /* DropDownItem+CoreDataProperties.swift */,
+				628558C5271B89A9001A93C0 /* AnswerInfo+CoreDataClass.swift */,
+				628558C6271B89A9001A93C0 /* AnswerInfo+CoreDataProperties.swift */,
 				620A5D4F271A0749002775FB /* LabelInfo+CoreDataClass.swift */,
 				620A5D50271A0749002775FB /* LabelInfo+CoreDataProperties.swift */,
 				620A5D51271A0749002775FB /* QuestionInfo+CoreDataClass.swift */,
@@ -356,10 +372,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				628558C1271B897A001A93C0 /* geotag.xcdatamodeld in Sources */,
 				623233E62705475A0068A21B /* AppDelegate.swift in Sources */,
-				623233F02705475A0068A21B /* geotag.xcdatamodeld in Sources */,
 				623233E82705475A0068A21B /* SceneDelegate.swift in Sources */,
 				623FF4B727188AE70033C164 /* Constatns.swift in Sources */,
+				628558C7271B89A9001A93C0 /* DropDownItem+CoreDataClass.swift in Sources */,
 				625D9752270A102100B138CD /* TrainingController.swift in Sources */,
 				625D974C2709FE8F00B138CD /* MenuController.swift in Sources */,
 				625D9754270A4B4700B138CD /* BusinessCell.swift in Sources */,
@@ -368,17 +385,20 @@
 				62249B8427093CA70040E177 /* ClubSearchController.swift in Sources */,
 				625D974A2709FE4700B138CD /* HBSplitViewController.swift in Sources */,
 				620A5D55271A0749002775FB /* LabelInfo+CoreDataClass.swift in Sources */,
+				628558CD271B89A9001A93C0 /* AnswerInfo+CoreDataProperties.swift in Sources */,
 				625D974E270A043700B138CD /* BusinessController.swift in Sources */,
 				62249B7B2708E44E0040E177 /* UIColor+CustomColor.swift in Sources */,
 				620A5D5D271A0749002775FB /* ClubInfo+CoreDataClass.swift in Sources */,
 				62249B772708DE4D0040E177 /* LoginController.swift in Sources */,
 				6207D08C2714C47F009414A5 /* VisitPrepareController.swift in Sources */,
 				62249B8227090A8A0040E177 /* ClubCell.swift in Sources */,
+				628558C9271B89A9001A93C0 /* DropDownItem+CoreDataProperties.swift in Sources */,
 				623FF4BA2718C0BB0033C164 /* MKMapView+CustomZoom.swift in Sources */,
 				620A5D57271A0749002775FB /* LabelInfo+CoreDataProperties.swift in Sources */,
 				620A5D62271A24D3002775FB /* VisitPrepareCell.swift in Sources */,
 				620A5D5F271A0749002775FB /* ClubInfo+CoreDataProperties.swift in Sources */,
 				625D9750270A07BE00B138CD /* MenuCell.swift in Sources */,
+				628558CB271B89A9001A93C0 /* AnswerInfo+CoreDataClass.swift in Sources */,
 				62A41EBA2716359700241226 /* AnswerCell.swift in Sources */,
 				62EC11CE27177BB500D5B5AA /* NetworkMonitor.swift in Sources */,
 				620A5D5B271A0749002775FB /* QuestionInfo+CoreDataProperties.swift in Sources */,
@@ -392,10 +412,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				628558C2271B8984001A93C0 /* geotag.xcdatamodeld in Sources */,
 				623FF49927187A970033C164 /* AppDelegate.swift in Sources */,
-				623FF49A27187A970033C164 /* geotag.xcdatamodeld in Sources */,
 				623FF49B27187A970033C164 /* SceneDelegate.swift in Sources */,
 				623FF4B827188AE70033C164 /* Constatns.swift in Sources */,
+				628558C8271B89A9001A93C0 /* DropDownItem+CoreDataClass.swift in Sources */,
 				623FF49C27187A970033C164 /* TrainingController.swift in Sources */,
 				623FF49D27187A970033C164 /* MenuController.swift in Sources */,
 				623FF49E27187A970033C164 /* BusinessCell.swift in Sources */,
@@ -404,17 +425,20 @@
 				623FF4A027187A970033C164 /* ClubSearchController.swift in Sources */,
 				623FF4A127187A970033C164 /* HBSplitViewController.swift in Sources */,
 				620A5D56271A0749002775FB /* LabelInfo+CoreDataClass.swift in Sources */,
+				628558CE271B89A9001A93C0 /* AnswerInfo+CoreDataProperties.swift in Sources */,
 				623FF4A227187A970033C164 /* BusinessController.swift in Sources */,
 				623FF4A327187A970033C164 /* UIColor+CustomColor.swift in Sources */,
 				620A5D5E271A0749002775FB /* ClubInfo+CoreDataClass.swift in Sources */,
 				623FF4A427187A970033C164 /* LoginController.swift in Sources */,
 				623FF4A527187A970033C164 /* VisitPrepareController.swift in Sources */,
 				623FF4A627187A970033C164 /* ClubCell.swift in Sources */,
+				628558CA271B89A9001A93C0 /* DropDownItem+CoreDataProperties.swift in Sources */,
 				623FF4BB2718C0BB0033C164 /* MKMapView+CustomZoom.swift in Sources */,
 				620A5D58271A0749002775FB /* LabelInfo+CoreDataProperties.swift in Sources */,
 				620A5D63271A24D3002775FB /* VisitPrepareCell.swift in Sources */,
 				620A5D60271A0749002775FB /* ClubInfo+CoreDataProperties.swift in Sources */,
 				623FF4A727187A970033C164 /* MenuCell.swift in Sources */,
+				628558CC271B89A9001A93C0 /* AnswerInfo+CoreDataClass.swift in Sources */,
 				623FF4A827187A970033C164 /* AnswerCell.swift in Sources */,
 				623FF4A927187A970033C164 /* NetworkMonitor.swift in Sources */,
 				620A5D5C271A0749002775FB /* QuestionInfo+CoreDataProperties.swift in Sources */,

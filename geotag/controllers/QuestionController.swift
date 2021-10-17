@@ -7,7 +7,19 @@
 
 import UIKit
 
+//protocol QuestionControllerDelegate {
+//    func answerFinished(_ result: Bool)
+//}
+
 class QuestionController: UIViewController {
+    
+    var answer: AnswerInfo? {
+        didSet {
+            if answer?.questionType == "MULTI_SELECT" {
+                table.allowsMultipleSelection = true
+            }
+        }
+    }
     var completionHandler: (() -> ())?
     
     static let cellId = "answerCellId"
@@ -18,9 +30,9 @@ class QuestionController: UIViewController {
         t.translatesAutoresizingMaskIntoConstraints = false
         t.register(AnswerCell.self, forCellReuseIdentifier: QuestionController.cellId)
         t.alwaysBounceVertical = false
-        t.layer.cornerRadius = 20
+        t.layer.cornerRadius = 10
         t.separatorStyle = .none
-        t.allowsMultipleSelection = true
+        t.allowsMultipleSelection = false
         t.layer.borderColor = UIColor.hbGreen.cgColor
         t.layer.borderWidth = 2
         
@@ -93,6 +105,20 @@ class QuestionController: UIViewController {
     }
     
     @objc func okAction() {
+        if let rows = table.indexPathsForSelectedRows {
+            answer?.ans?.removeAll()
+            for r in rows {
+                answer?.ans?.append(r.row)
+            }
+        }
+        
+        answer?.comment = commentView.text
+        
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        let context = appDelegate.persistentContainer.viewContext
+        
+        try? context.save()
+        
         dismiss(animated: true, completion: nil)
         completionHandler!()
 
@@ -141,24 +167,15 @@ class QuestionController: UIViewController {
 
 extension QuestionController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        6
+        answer?.items?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: QuestionController.cellId, for: indexPath) as! AnswerCell
-        if indexPath.row == 0 {
-            cell.optionLbl.text = "Weight Loss Challenge"
-        } else if indexPath.row == 1 {
-            cell.optionLbl.text = "Masterclass– Healthy Snacking"
-        } else if indexPath.row == 2 {
-            cell.optionLbl.text = "Healthy Active Lifestyle"
-        } else if indexPath.row == 3 {
-            cell.optionLbl.text = "Skin Party"
-        } else if indexPath.row == 4 {
-            cell.optionLbl.text = "Tea/Shake Party"
-        } else if indexPath.row == 5 {
-            cell.optionLbl.text = "Others"
-        }
+        let dropDownItem = answer?.items?.array[indexPath.row] as! DropDownItem
+        cell.optionLbl.text = dropDownItem.labelValue
+
+
         return cell
     }
     

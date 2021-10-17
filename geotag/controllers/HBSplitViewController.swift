@@ -10,8 +10,11 @@ import UIKit
 class HBSplitViewController: UISplitViewController {
     
     var menuController: MenuController?
-    var businessNavController: UINavigationController?
-    var trainingNavController: UINavigationController?
+    private var businessNavController: UINavigationController?
+    private var trainingNavController: UINavigationController?
+    
+    var businessController = BusinessController()
+    var trainingController = TrainingController()
     
     var cancelVisitBtn: UIBarButtonItem?
     var submitBtn: UIBarButtonItem?
@@ -29,12 +32,12 @@ class HBSplitViewController: UISplitViewController {
         menuController?.delegate = self
         
         
-        let businessController = BusinessController()
+
         businessController.navigationItem.leftBarButtonItem = cancelVisitBtn
         businessController.navigationItem.rightBarButtonItem = submitBtn
         businessNavController = UINavigationController(rootViewController: businessController)
         
-        let trainingController = TrainingController()
+
         trainingController.navigationItem.leftBarButtonItem = cancelVisitBtn
         trainingController.navigationItem.rightBarButtonItem = submitBtn
         trainingNavController = UINavigationController(rootViewController: trainingController)
