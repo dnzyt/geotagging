@@ -27,6 +27,15 @@ class ClubCell: UITableViewCell {
         return t
     }()
     
+    let ckImg: UIImageView = {
+        let c = UIImageView(image: UIImage(systemName: "key"))
+        c.translatesAutoresizingMaskIntoConstraints = false
+        c.tintColor = .lightGray
+        c.contentMode = .scaleAspectFit
+        
+        return c
+    }()
+    
     let clubKeyLbl: UILabel = {
 
         let l = UILabel()
@@ -58,8 +67,29 @@ class ClubCell: UITableViewCell {
         s.backgroundColor = .clear
         s.spacing = 5
         s.translatesAutoresizingMaskIntoConstraints = false
+
         
         return s
+    }()
+    
+    let ckHorizontalStackView: UIStackView = {
+        let s = UIStackView()
+        s.axis = .horizontal
+        s.backgroundColor = .clear
+        s.spacing = 5
+        s.translatesAutoresizingMaskIntoConstraints = false
+
+        
+        return s
+    }()
+    
+    let addressImg: UIImageView = {
+        let c = UIImageView(image: UIImage(systemName: "house"))
+        c.translatesAutoresizingMaskIntoConstraints = false
+        c.tintColor = .lightGray
+        c.contentMode = .scaleAspectFit
+        
+        return c
     }()
     
     let addressLbl: UILabel = {
@@ -148,11 +178,7 @@ class ClubCell: UITableViewCell {
         let c = UIView()
         c.backgroundColor = .white
         c.translatesAutoresizingMaskIntoConstraints = false
-//        c.layer.cornerRadius = 5
-//        c.layer.shadowColor = UIColor.black.cgColor
-//        c.layer.shadowOpacity = 0.3
-//        c.layer.shadowOffset = CGSize(width: 5, height: 5)
-//        c.layer.shadowRadius = 5
+
         
         return c
     }()
@@ -175,10 +201,13 @@ class ClubCell: UITableViewCell {
         clubNameStackView.addArrangedSubview(clubNameLbl)
         clubNameStackView.addArrangedSubview(clubNameContentsLbl)
         
+        
         topStackView.addArrangedSubview(ckStackView)
         topStackView.addArrangedSubview(clubNameStackView)
         container.addSubview(topStackView)
 
+        container.addSubview(ckImg)
+        container.addSubview(addressImg)
         container.addSubview(mapPin)
         
         contentView.addSubview(container)
@@ -191,12 +220,20 @@ class ClubCell: UITableViewCell {
             container.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             container.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -20),
             topStackView.topAnchor.constraint(equalTo: container.topAnchor, constant: 10),
-            topStackView.leftAnchor.constraint(equalTo: container.leftAnchor, constant: 10),
-            topStackView.bottomAnchor.constraint(equalTo: addressStackView.topAnchor, constant: -10),
+            topStackView.leftAnchor.constraint(equalTo: container.leftAnchor, constant: 40),
+            topStackView.bottomAnchor.constraint(equalTo: addressStackView.topAnchor, constant: -15),
             topStackView.rightAnchor.constraint(equalTo: container.rightAnchor, constant: -10),
-            addressStackView.leftAnchor.constraint(equalTo: container.leftAnchor, constant: 10),
+            ckImg.widthAnchor.constraint(equalToConstant: 25),
+            ckImg.heightAnchor.constraint(equalToConstant: 25),
+            ckImg.centerYAnchor.constraint(equalTo: topStackView.centerYAnchor),
+            ckImg.rightAnchor.constraint(equalTo: topStackView.leftAnchor, constant: -5),
+            addressStackView.leftAnchor.constraint(equalTo: container.leftAnchor, constant: 40),
             addressStackView.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -10),
             addressStackView.widthAnchor.constraint(equalToConstant: 200),
+            addressImg.widthAnchor.constraint(equalToConstant: 25),
+            addressImg.heightAnchor.constraint(equalToConstant: 25),
+            addressImg.centerYAnchor.constraint(equalTo: addressStackView.centerYAnchor),
+            addressImg.rightAnchor.constraint(equalTo: addressStackView.leftAnchor, constant: -5),
             mapPin.rightAnchor.constraint(equalTo: container.rightAnchor, constant: -10),
             mapPin.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -10)
         ])

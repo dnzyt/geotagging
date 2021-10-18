@@ -280,8 +280,6 @@ extension HomeController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "annotationView")
         annotationView.canShowCallout = true
-        annotationView.largeContentTitle = "hello"
-        annotationView.calloutOffset = CGPoint(x: -5, y: 5)
         annotationView.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
 
         return annotationView
