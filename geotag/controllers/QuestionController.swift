@@ -148,10 +148,8 @@ class QuestionController: UIViewController {
         ])
     }
     override func viewDidLayoutSubviews() {
-        print("table height: \(table.frame.height)")
         let num = table.numberOfRows(inSection: 0)
         let cell = table.cellForRow(at: IndexPath(row: 0, section: 0))
-        print("table after height: \(cell!.frame.height * CGFloat(num))")
         table.heightAnchor.constraint(equalToConstant:cell!.frame.height * CGFloat(num)).isActive = true
         
         let circle = CAShapeLayer()

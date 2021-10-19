@@ -19,4 +19,5 @@ struct Constatns {
 enum Defaults: String {
     case authentication = "AUTHENTICATION"
     case questions_downloaded = "QUESTIONS_DOWNLOADED"
+    case language_code = "LANGUAGE_CODE"
 }

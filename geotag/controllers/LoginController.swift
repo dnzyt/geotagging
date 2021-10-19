@@ -58,6 +58,9 @@ class LoginController: UIViewController {
     @objc fileprivate func loginAction() {
         
         UserDefaults.standard.set(true, forKey: Defaults.authentication.rawValue)
+        
+        UserDefaults.standard.set("id", forKey: Defaults.language_code.rawValue)
+                
         let questionsDownloaded = UserDefaults.standard.bool(forKey: Defaults.questions_downloaded.rawValue)
         if questionsDownloaded {
             print("questions are already downloaded.")

@@ -1,0 +1,13 @@
+/* 
+  localizable.strings
+  geotag
+
+  Created by Ningze Dai on 10/19/21.
+  
+*/
+
+
+"RESIDENTIAL" = "Residential";
+"NON-RESIDENTIAL" = "Non-Residential";
+
+"ACTIVE" = "Active";
