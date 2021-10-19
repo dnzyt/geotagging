@@ -229,7 +229,24 @@ class HomeController: UIViewController {
     }
     
     @objc func clearClubs() {
-        print("clear clubs")
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        let context = appDelegate.persistentContainer.viewContext
+        
+        let alert = UIAlertController(title: "Delete Clubs", message: "Do you want to delete all clubs?", preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "No", style: .default, handler: { [weak self] _ in
+            self?.dismiss(animated: true, completion: nil)
+        }))
+        alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { [weak self] _ in
+            for club in self!.clubs {
+                context.delete(club)
+            }
+            self?.clubs.removeAll()
+            self?.refreshMap()
+            try? context.save()
+            self?.clubTable.reloadData()
+        }))
+        present(alert, animated: true, completion: nil)
     }
     
 
@@ -267,6 +284,23 @@ extension HomeController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         showPrepareController(club: clubs[indexPath.row])
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        let context = appDelegate.persistentContainer.viewContext
+        if editingStyle == .delete {
+            let club = clubs.remove(at: indexPath.row)
+            context.delete(club)
+            do {
+                try context.save()
+            } catch {
+                print("delete club failed")
+                return
+            }
+            tableView.reloadData()
+            refreshMap()
+        }
     }
     
 }

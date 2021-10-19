@@ -121,10 +121,19 @@ class VisitPrepareController: UIViewController {
     }
     
     @objc func startVisit() {
-        guard let answers = prepareQuestions() else { return }
         
-        guard let businessAnswers = answers["business"] else { return }
         
+        
+        
+        guard let visitInfo = prepareVisit() else { return }
+        
+        var businessAnswers = [AnswerInfo]()
+        for ans in visitInfo.answers! {
+            let a = ans as! AnswerInfo
+            if a.categoryId == "1" {
+                businessAnswers.append(a)
+            }
+        }
         
         guard let window = self.view.window else { return }
         UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve) {
@@ -134,6 +143,7 @@ class VisitPrepareController: UIViewController {
             split.preferredPrimaryColumnWidth = 240
             split.displayModeButtonVisibility = .never
             
+            split.visitInfo = visitInfo
             split.businessController.answers = businessAnswers
             
             window.rootViewController = split
@@ -141,21 +151,34 @@ class VisitPrepareController: UIViewController {
     }
     
     
-    private func prepareQuestions() -> [String: [AnswerInfo]]? {
+    private func prepareVisit() -> VisitInfo? {
+        guard let clubKey = club?.clubKey else { return nil }
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return nil }
         let context = appDelegate.persistentContainer.viewContext
         
-        var answers = [String: [AnswerInfo]]()
+        let visitInfoFetchRequest = VisitInfo.fetchRequest()
+        let predicate1 = NSPredicate(format: "clubKey == %@", clubKey)
+        let predicate2 = NSPredicate(format: "finished == %@", NSNumber(value: false))
+        let predicate3 = NSPredicate(format: "submitted == %@", NSNumber(value: false))
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate1, predicate2, predicate3])
+        visitInfoFetchRequest.predicate = predicate
+        let visitInfos = try? context.fetch(visitInfoFetchRequest)
         
-        let fq = QuestionInfo.fetchRequest()
-        var businessCategory = [AnswerInfo]()
-        if let res = try? context.fetch(fq) {
-            for q in res {
-                if q.categoryId == "1" {
+        var visitInfo: VisitInfo
+        if let vif = visitInfos?.first {
+            visitInfo = vif
+        } else {
+            visitInfo = VisitInfo(context: context)
+            visitInfo.clubKey = clubKey
+            visitInfo.visitDate = Date()
+            
+            let fq = QuestionInfo.fetchRequest()
+            if let res = try? context.fetch(fq) {
+                for q in res {
                     let ans = AnswerInfo(context: context)
                     ans.ans = []
                     ans.categoryId = q.categoryId
-                    ans.categoryId = q.countryCode
+                    ans.countryCode = q.countryCode
                     ans.questionKey = q.questionKey
                     ans.questionType = q.questionType
                     ans.label = q.label
@@ -166,12 +189,10 @@ class VisitPrepareController: UIViewController {
                         dropDownItem.labelValue = item.labelValue
                         ans.addToItems(dropDownItem)
                     }
-                    businessCategory.append(ans)
+                    ans.visitInfo = visitInfo
                 }
             }
         }
-        
-        answers["business"] = businessCategory
         
         do {
             try context.save()
@@ -180,7 +201,7 @@ class VisitPrepareController: UIViewController {
             return nil
         }
         
-        return answers
+        return visitInfo
     }
     
     

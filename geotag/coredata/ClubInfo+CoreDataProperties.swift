@@ -2,7 +2,7 @@
 //  ClubInfo+CoreDataProperties.swift
 //  geotag
 //
-//  Created by Ningze Dai on 10/15/21.
+//  Created by Ningze Dai on 10/19/21.
 //
 //
 
@@ -20,6 +20,7 @@ extension ClubInfo {
     @NSManaged public var city: String?
     @NSManaged public var clubKey: String?
     @NSManaged public var clubName: String?
+    @NSManaged public var clubStatus: String?
     @NSManaged public var clubType: String?
     @NSManaged public var geocode: String?
     @NSManaged public var geoUpdated: Bool
@@ -30,7 +31,6 @@ extension ClubInfo {
     @NSManaged public var province: String?
     @NSManaged public var uplineName: String?
     @NSManaged public var zip: String?
-    @NSManaged public var clubStatus: String?
 
 }
 
