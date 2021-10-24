@@ -1,21 +1,21 @@
 //
-//  TrainingController.swift
+//  FeedbackController.swift
 //  geotag
 //
-//  Created by Ningze Dai on 10/3/21.
+//  Created by Ningze Dai on 10/22/21.
 //
 
 import UIKit
 
-class TrainingController: UIViewController {
-    static let cellId = "trainingCellId"
+class FeedbackController: UIViewController {
+    static let cellId = "feedbackCellId"
     
     var answers: [AnswerInfo]?
     
     let tv: UITableView = {
         let t = UITableView()
         t.translatesAutoresizingMaskIntoConstraints = false
-        t.register(TrainingCell.self, forCellReuseIdentifier: TrainingController.cellId)
+        t.register(FeedbackCell.self, forCellReuseIdentifier: FeedbackController.cellId)
         t.estimatedRowHeight = 300
         t.rowHeight = UITableView.automaticDimension
         t.separatorStyle = .none
@@ -28,7 +28,7 @@ class TrainingController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .white
-        navigationItem.title = "Training"
+        navigationItem.title = "Feedback"
         
         setupTable()
         setupNavigationBar()
@@ -69,13 +69,13 @@ class TrainingController: UIViewController {
 
 }
 
-extension TrainingController: UITableViewDataSource {
+extension FeedbackController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return answers!.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: TrainingController.cellId, for: indexPath) as! TrainingCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: FeedbackController.cellId, for: indexPath) as! FeedbackCell
         let ans = answers![indexPath.row]
         cell.answer = ans
 
@@ -86,7 +86,7 @@ extension TrainingController: UITableViewDataSource {
     
 }
 
-extension TrainingController: UITableViewDelegate {
+extension FeedbackController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let qc = QuestionController()
         qc.modalPresentationStyle = .formSheet
@@ -97,3 +97,4 @@ extension TrainingController: UITableViewDelegate {
         present(qc, animated: true, completion: nil)
     }
 }
+

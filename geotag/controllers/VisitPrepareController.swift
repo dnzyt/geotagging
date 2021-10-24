@@ -7,10 +7,14 @@
 
 import UIKit
 import CoreLocation
+import JGProgressHUD
+import Reachability
 
 class VisitPrepareController: UIViewController {
     
     static let cellId = "visitPrepareCellId"
+    
+    let hud = JGProgressHUD()
     
     var club: ClubInfo?
     
@@ -122,18 +126,27 @@ class VisitPrepareController: UIViewController {
     
     @objc func startVisit() {
         
-        
-        
-        
         guard let visitInfo = prepareVisit() else { return }
         
         var businessAnswers = [AnswerInfo]()
+        var trainingAnswers = [AnswerInfo]()
+        var trackingAnswers = [AnswerInfo]()
+        var feedbackAnswers = [AnswerInfo]()
+
         for ans in visitInfo.answers! {
             let a = ans as! AnswerInfo
             if a.categoryId == "1" {
                 businessAnswers.append(a)
+            } else if a.categoryId == "2" {
+                trainingAnswers.append(a)
+            } else if a.categoryId == "3" {
+                trackingAnswers.append(a)
+            } else if a.categoryId == "4" {
+                feedbackAnswers.append(a)
             }
         }
+        
+        
         
         guard let window = self.view.window else { return }
         UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve) {
@@ -145,6 +158,10 @@ class VisitPrepareController: UIViewController {
             
             split.visitInfo = visitInfo
             split.businessController.answers = businessAnswers
+            split.trainingController.answers = trainingAnswers
+            split.trackingController.answers = trackingAnswers
+            split.feedbackController.answers = feedbackAnswers
+            
             
             window.rootViewController = split
         }
@@ -206,6 +223,16 @@ class VisitPrepareController: UIViewController {
     
     
     @objc func getLocation() {
+        if updatingLocation {
+            return
+        }
+        
+        DispatchQueue.main.async {
+            self.hud.textLabel.text = "Searching geocode..."
+            self.hud.indicatorView = JGProgressHUDIndeterminateIndicatorView()
+            self.hud.show(in: self.view.window!)
+        }
+        
         let authStatus = locationManager.authorizationStatus
         if authStatus == .notDetermined {
             return
@@ -227,10 +254,17 @@ class VisitPrepareController: UIViewController {
     }
     
     func showLocationErrorAlert() {
-        let alert = UIAlertController(title: "Location Services Error", message: "Location service is not available at this time, please try again later", preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-        alert.addAction(okAction)
-        present(alert, animated: true, completion: nil)
+//        let alert = UIAlertController(title: "Location Services Error", message: "Location service is not available at this time, please try again later", preferredStyle: .alert)
+//        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+//        alert.addAction(okAction)
+//        present(alert, animated: true, completion: nil)
+        DispatchQueue.main.async {
+            self.hud.textLabel.text = "Geo Tagging Failed"
+            self.hud.detailTextLabel.text = "Location service is not available at this time, please try again later"
+            self.hud.indicatorView = JGProgressHUDErrorIndicatorView()
+            self.hud.indicatorView?.tintColor = .red
+            self.hud.dismiss(afterDelay: 2)
+        }
     }
     
     func stopLocationManager() {
@@ -239,6 +273,27 @@ class VisitPrepareController: UIViewController {
             updatingLocation = false
             print("stop location manager")
         }
+    }
+    
+    func updateGeocode(_ geocode: String, for club: ClubInfo) {
+        DispatchQueue.main.async {
+            self.hud.textLabel.text = "Updating geocode"
+            self.hud.indicatorView = JGProgressHUDIndeterminateIndicatorView()
+            self.hud.detailTextLabel.text = nil
+
+            if !self.hud.isVisible {
+                self.hud.show(in: self.view.window!, animated: true)
+            }
+            self.hud.dismiss(afterDelay: 5)
+        }
+        
+        let reachability = try! Reachability()
+        if reachability.connection != .unavailable {
+            print("internet connection available")
+        } else {
+            print("internet connection not available")
+        }
+        
     }
 
 }
@@ -262,6 +317,56 @@ extension VisitPrepareController: CLLocationManagerDelegate {
             if newLocation.horizontalAccuracy <= locationManager.desiredAccuracy {
                 print("find the desired location \(newLocation)")
                 stopLocationManager()
+
+                
+//                guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+//                let context = appDelegate.persistentContainer.viewContext
+                
+                let geocodeString = "\(newLocation.coordinate.latitude),\(newLocation.coordinate.longitude)"
+                if let geocode = club?.geocode {
+                    let comps = geocode.components(separatedBy: ",")
+                    if let lat = Double(comps[0]), let long = Double(comps[1]) {
+                        let oldLocation = CLLocation(latitude: lat, longitude: long)
+                        let distance = newLocation.distance(from: oldLocation)
+                        if distance < 20 {
+                            DispatchQueue.main.async {
+                                self.hud.dismiss(animated: true)
+                            }
+                            let alert = UIAlertController(title: "Geo Tagging", message: "The distance is less than 20 meters, do you want to update the geocode?", preferredStyle: .alert)
+                            let cancelAction = UIAlertAction(title: "No", style: .cancel, handler: nil)
+                            let okAction = UIAlertAction(title: "Yes", style: .default) { [weak self] _ in
+                                // call service to update geocode
+                                self!.updateGeocode(geocodeString, for: self!.club!)
+                            }
+
+                            alert.addAction(cancelAction)
+                            alert.addAction(okAction)
+                            present(alert, animated: true, completion: nil)
+                            
+                        } else {
+                            // directly call service to update geocode
+                            updateGeocode(geocodeString, for: club!)
+                        }
+                    } else {
+                        // no geocode on file
+                        // directly call service to update geocode
+                        updateGeocode(geocodeString, for: club!)
+
+                    }
+                    
+                    
+                } else {
+                    // no geocode on file
+                    // directly call service to update geocode
+                    updateGeocode(geocodeString, for: club!)
+
+                    
+                    
+//                    let alert = UIAlertController(title: "Geo Tagging", message: "The geocode of the club has been updated", preferredStyle: .alert)
+//                    let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+//                    alert.addAction(okAction)
+//                    present(alert, animated: true, completion: nil)
+                }
             }
         }
     }
@@ -271,6 +376,7 @@ extension VisitPrepareController: CLLocationManagerDelegate {
         if (error as NSError).code == CLError.locationUnknown.rawValue {
             return
         }
+        
         lastLocationError = error
         showLocationErrorAlert()
         stopLocationManager()

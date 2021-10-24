@@ -17,6 +17,8 @@ class QuestionController: UIViewController {
         didSet {
             if answer?.questionType == "MULTI_SELECT" {
                 table.allowsMultipleSelection = true
+            } else {
+                table.allowsMultipleSelection = false
             }
         }
     }
@@ -112,7 +114,9 @@ class QuestionController: UIViewController {
             }
         }
         
-        answer?.comment = commentView.text
+        if commentView.textColor == .black {
+            answer?.comment = commentView.text
+        }
         
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let context = appDelegate.persistentContainer.viewContext
@@ -159,6 +163,16 @@ class QuestionController: UIViewController {
         circle.lineWidth = 2
         
         okBtn.layer.addSublayer(circle)
+        
+        if let ans = answer?.ans {
+            for i in ans {
+                table.selectRow(at: IndexPath(row: i, section: 0), animated: false, scrollPosition: .none)
+            }
+        }
+        
+        if let commentContent = answer?.comment {
+            commentView.text = commentContent
+        }
     }
 
 }
@@ -198,7 +212,7 @@ extension QuestionController: UITextViewDelegate {
     
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.isEmpty {
-            textView.text = "Placeholder"
+            textView.text = "Comment:"
             textView.textColor = UIColor.lightGray
         }
     }

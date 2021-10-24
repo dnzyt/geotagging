@@ -61,6 +61,16 @@
 		628558C1271B897A001A93C0 /* geotag.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 623233EE2705475A0068A21B /* geotag.xcdatamodeld */; };
 		628558C2271B8984001A93C0 /* geotag.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 623233EE2705475A0068A21B /* geotag.xcdatamodeld */; };
 		62A41EBA2716359700241226 /* AnswerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A41EB92716359700241226 /* AnswerCell.swift */; };
+		62A6C4152722ED6C0006F4C4 /* TrainingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A6C4142722ED6C0006F4C4 /* TrainingCell.swift */; };
+		62A6C4162722ED6C0006F4C4 /* TrainingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A6C4142722ED6C0006F4C4 /* TrainingCell.swift */; };
+		62A6C4182722EEE00006F4C4 /* TrackingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A6C4172722EEE00006F4C4 /* TrackingCell.swift */; };
+		62A6C4192722EEE00006F4C4 /* TrackingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A6C4172722EEE00006F4C4 /* TrackingCell.swift */; };
+		62A6C41B2722EEF50006F4C4 /* FeedbackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A6C41A2722EEF50006F4C4 /* FeedbackCell.swift */; };
+		62A6C41C2722EEF50006F4C4 /* FeedbackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A6C41A2722EEF50006F4C4 /* FeedbackCell.swift */; };
+		62A6C41E2722EF630006F4C4 /* TrackingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A6C41D2722EF630006F4C4 /* TrackingController.swift */; };
+		62A6C41F2722EF630006F4C4 /* TrackingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A6C41D2722EF630006F4C4 /* TrackingController.swift */; };
+		62A6C4212722EF750006F4C4 /* FeedbackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A6C4202722EF750006F4C4 /* FeedbackController.swift */; };
+		62A6C4222722EF750006F4C4 /* FeedbackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A6C4202722EF750006F4C4 /* FeedbackController.swift */; };
 		62B56CED271A521800A58ACC /* JGProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 62B56CEC271A521800A58ACC /* JGProgressHUD */; };
 		62B56CEF271A539B00A58ACC /* JGProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 62B56CEE271A539B00A58ACC /* JGProgressHUD */; };
 		62B56CF1271A661900A58ACC /* Artwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B56CF0271A661900A58ACC /* Artwork.swift */; };
@@ -130,6 +140,11 @@
 		625D9753270A4B4700B138CD /* BusinessCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessCell.swift; sourceTree = "<group>"; };
 		625D9755270A557700B138CD /* QuestionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionController.swift; sourceTree = "<group>"; };
 		62A41EB92716359700241226 /* AnswerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerCell.swift; sourceTree = "<group>"; };
+		62A6C4142722ED6C0006F4C4 /* TrainingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingCell.swift; sourceTree = "<group>"; };
+		62A6C4172722EEE00006F4C4 /* TrackingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingCell.swift; sourceTree = "<group>"; };
+		62A6C41A2722EEF50006F4C4 /* FeedbackCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackCell.swift; sourceTree = "<group>"; };
+		62A6C41D2722EF630006F4C4 /* TrackingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingController.swift; sourceTree = "<group>"; };
+		62A6C4202722EF750006F4C4 /* FeedbackController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackController.swift; sourceTree = "<group>"; };
 		62B56CF0271A661900A58ACC /* Artwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Artwork.swift; sourceTree = "<group>"; };
 		62D9AF8C271F589000C9812A /* OfflineManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineManager.swift; sourceTree = "<group>"; };
 		62D9AF8F271F601000C9812A /* OfflineGeocode+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OfflineGeocode+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -180,9 +195,11 @@
 				62249B8327093CA70040E177 /* ClubSearchController.swift */,
 				62249B7C270907A00040E177 /* HBNavigationController.swift */,
 				625D974B2709FE8F00B138CD /* MenuController.swift */,
+				62A6C4202722EF750006F4C4 /* FeedbackController.swift */,
 				625D9755270A557700B138CD /* QuestionController.swift */,
 				62249B7E270909A10040E177 /* HomeController.swift */,
 				625D97492709FE4700B138CD /* HBSplitViewController.swift */,
+				62A6C41D2722EF630006F4C4 /* TrackingController.swift */,
 				625D974D270A043700B138CD /* BusinessController.swift */,
 				625D9751270A102100B138CD /* TrainingController.swift */,
 				6207D08B2714C47F009414A5 /* VisitPrepareController.swift */,
@@ -206,8 +223,11 @@
 				62249B8127090A8A0040E177 /* ClubCell.swift */,
 				625D974F270A07BE00B138CD /* MenuCell.swift */,
 				620A5D61271A24D3002775FB /* VisitPrepareCell.swift */,
+				62A6C4142722ED6C0006F4C4 /* TrainingCell.swift */,
+				62A6C41A2722EEF50006F4C4 /* FeedbackCell.swift */,
 				625D9753270A4B4700B138CD /* BusinessCell.swift */,
 				62A41EB92716359700241226 /* AnswerCell.swift */,
+				62A6C4172722EEE00006F4C4 /* TrackingCell.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -405,6 +425,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				628558C1271B897A001A93C0 /* geotag.xcdatamodeld in Sources */,
+				62A6C4152722ED6C0006F4C4 /* TrainingCell.swift in Sources */,
 				623233E62705475A0068A21B /* AppDelegate.swift in Sources */,
 				62D9AFAD271F601000C9812A /* DropDownItem+CoreDataClass.swift in Sources */,
 				62D9AF9D271F601000C9812A /* OfflineGeocode+CoreDataClass.swift in Sources */,
@@ -424,12 +445,15 @@
 				625D974E270A043700B138CD /* BusinessController.swift in Sources */,
 				62249B7B2708E44E0040E177 /* UIColor+CustomColor.swift in Sources */,
 				62249B772708DE4D0040E177 /* LoginController.swift in Sources */,
+				62A6C4182722EEE00006F4C4 /* TrackingCell.swift in Sources */,
 				6207D08C2714C47F009414A5 /* VisitPrepareController.swift in Sources */,
 				62249B8227090A8A0040E177 /* ClubCell.swift in Sources */,
+				62A6C4212722EF750006F4C4 /* FeedbackController.swift in Sources */,
 				623FF4BA2718C0BB0033C164 /* MKMapView+CustomZoom.swift in Sources */,
 				620A5D62271A24D3002775FB /* VisitPrepareCell.swift in Sources */,
 				62D9AFA3271F601000C9812A /* AnswerInfo+CoreDataProperties.swift in Sources */,
 				62D9AF8D271F589000C9812A /* OfflineManager.swift in Sources */,
+				62A6C41B2722EEF50006F4C4 /* FeedbackCell.swift in Sources */,
 				62D9AFB7271F601000C9812A /* VisitInfo+CoreDataProperties.swift in Sources */,
 				621038A2271F180F00155709 /* String+CustomLocal.swift in Sources */,
 				625D9750270A07BE00B138CD /* MenuCell.swift in Sources */,
@@ -442,6 +466,7 @@
 				62249B7D270907A00040E177 /* HBNavigationController.swift in Sources */,
 				62D9AFA5271F601000C9812A /* QuestionInfo+CoreDataClass.swift in Sources */,
 				625D9756270A557700B138CD /* QuestionController.swift in Sources */,
+				62A6C41E2722EF630006F4C4 /* TrackingController.swift in Sources */,
 				62D9AFAF271F601000C9812A /* DropDownItem+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -451,6 +476,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				628558C2271B8984001A93C0 /* geotag.xcdatamodeld in Sources */,
+				62A6C4162722ED6C0006F4C4 /* TrainingCell.swift in Sources */,
 				623FF49927187A970033C164 /* AppDelegate.swift in Sources */,
 				62D9AFAE271F601000C9812A /* DropDownItem+CoreDataClass.swift in Sources */,
 				62D9AF9E271F601000C9812A /* OfflineGeocode+CoreDataClass.swift in Sources */,
@@ -470,12 +496,15 @@
 				623FF4A227187A970033C164 /* BusinessController.swift in Sources */,
 				623FF4A327187A970033C164 /* UIColor+CustomColor.swift in Sources */,
 				623FF4A427187A970033C164 /* LoginController.swift in Sources */,
+				62A6C4192722EEE00006F4C4 /* TrackingCell.swift in Sources */,
 				623FF4A527187A970033C164 /* VisitPrepareController.swift in Sources */,
 				623FF4A627187A970033C164 /* ClubCell.swift in Sources */,
+				62A6C4222722EF750006F4C4 /* FeedbackController.swift in Sources */,
 				623FF4BB2718C0BB0033C164 /* MKMapView+CustomZoom.swift in Sources */,
 				620A5D63271A24D3002775FB /* VisitPrepareCell.swift in Sources */,
 				62D9AFA4271F601000C9812A /* AnswerInfo+CoreDataProperties.swift in Sources */,
 				62D9AF8E271F589000C9812A /* OfflineManager.swift in Sources */,
+				62A6C41C2722EEF50006F4C4 /* FeedbackCell.swift in Sources */,
 				62D9AFB8271F601000C9812A /* VisitInfo+CoreDataProperties.swift in Sources */,
 				621038A3271F180F00155709 /* String+CustomLocal.swift in Sources */,
 				623FF4A727187A970033C164 /* MenuCell.swift in Sources */,
@@ -488,6 +517,7 @@
 				623FF4AA27187A970033C164 /* HBNavigationController.swift in Sources */,
 				62D9AFA6271F601000C9812A /* QuestionInfo+CoreDataClass.swift in Sources */,
 				623FF4AB27187A970033C164 /* QuestionController.swift in Sources */,
+				62A6C41F2722EF630006F4C4 /* TrackingController.swift in Sources */,
 				62D9AFB0271F601000C9812A /* DropDownItem+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

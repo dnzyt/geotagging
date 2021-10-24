@@ -14,9 +14,13 @@ class HBSplitViewController: UISplitViewController {
     var menuController: MenuController?
     private var businessNavController: UINavigationController?
     private var trainingNavController: UINavigationController?
+    private var trackingNavController: UINavigationController?
+    private var feedbackNavController: UINavigationController?
     
     var businessController = BusinessController()
     var trainingController = TrainingController()
+    var trackingController = TrackingController()
+    var feedbackController = FeedbackController()
     
     var cancelVisitBtn: UIBarButtonItem?
     var submitBtn: UIBarButtonItem?
@@ -43,6 +47,16 @@ class HBSplitViewController: UISplitViewController {
         trainingController.navigationItem.leftBarButtonItem = cancelVisitBtn
         trainingController.navigationItem.rightBarButtonItem = submitBtn
         trainingNavController = UINavigationController(rootViewController: trainingController)
+        
+        trackingController.navigationItem.leftBarButtonItem = cancelVisitBtn
+        trackingController.navigationItem.rightBarButtonItem = submitBtn
+        trackingNavController = UINavigationController(rootViewController: trackingController)
+        
+        feedbackController.navigationItem.leftBarButtonItem = cancelVisitBtn
+        feedbackController.navigationItem.rightBarButtonItem = submitBtn
+        feedbackNavController = UINavigationController(rootViewController: feedbackController)
+        
+        
         
         
         
@@ -112,6 +126,10 @@ extension HBSplitViewController: MenuControllerDelegate {
             currentVC = businessNavController
         case 1:
             currentVC = trainingNavController
+        case 2:
+            currentVC = trackingNavController
+        case 3:
+            currentVC = feedbackNavController
         default:
             currentVC = businessNavController
         }

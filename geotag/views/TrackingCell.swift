@@ -1,14 +1,14 @@
 //
-//  BusinessCell.swift
+//  TrackingCell.swift
 //  geotag
 //
-//  Created by Ningze Dai on 10/3/21.
+//  Created by Ningze Dai on 10/22/21.
 //
 
 import UIKit
 
-class BusinessCell: UITableViewCell {
-    
+class TrackingCell: UITableViewCell {
+
     var answer: AnswerInfo? {
         didSet {
             questionLbl.text = answer?.label

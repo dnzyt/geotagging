@@ -7,6 +7,7 @@
 
 import UIKit
 import SwiftyJSON
+import CoreLocation
 
 protocol ClubSearchControllerDelegate: AnyObject {
     func searchStarted()
@@ -18,6 +19,7 @@ class ClubSearchController: UIViewController {
 
     static let clubKeyTag = 1
     static let memberIdTag = 2
+    
     
     weak var delegate: ClubSearchControllerDelegate?
     var searchContent: String?
@@ -187,7 +189,9 @@ class ClubSearchController: UIViewController {
                         club.primaryDsId = subJson["primaryDsId"].stringValue
                         club.primaryDsName = subJson["primaryDsName"].stringValue
                         club.uplineName = subJson["uplineName"].stringValue
-                        club.geocode = subJson["geocode"].stringValue
+//                        if let geocode = subJson["geocode"].string {
+//                            club.geocode = geocode
+//                        }
                         res.append(club)
                     }
                     

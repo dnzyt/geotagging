@@ -9,12 +9,15 @@ import UIKit
 import MapKit
 import Reachability
 import JGProgressHUD
+import CoreLocation
 
 
 class HomeController: UIViewController {
     
     
     let hud = JGProgressHUD()
+    let geocoder = CLGeocoder()
+
     let clubCellId = "clubCellId"
     
     private var compactConstraints: [NSLayoutConstraint] = []
@@ -47,6 +50,7 @@ class HomeController: UIViewController {
         mv.mapType = .standard
         mv.isZoomEnabled = true
         mv.isScrollEnabled = true
+        mv.showsUserLocation = true
         
         return mv
     }()
@@ -58,7 +62,8 @@ class HomeController: UIViewController {
         clubTable.delegate = self
         
         mapView.delegate = self
-        
+        let lc = CLLocationManager()
+        lc.requestWhenInUseAuthorization()
         
         setupNavitationBar()
         setupViews()
@@ -141,10 +146,10 @@ class HomeController: UIViewController {
         clubs.forEach { c in
             if let geocode = c.geocode {
                 let comps = geocode.components(separatedBy: ",")
-                let lat = Double(comps[0])
-                let long = Double(comps[1])
+                guard let lat = Double(comps[0]), let long = Double(comps[1]) else { return }
+                let coordinate = (lat: lat, long: long)
                 
-                let annotation = Artwork(title: c.clubKey, locationName: c.address, discipline: nil, coordinate: CLLocationCoordinate2D(latitude: lat!, longitude: long!), club: c)
+                let annotation = Artwork(title: c.clubKey, locationName: c.address, discipline: nil, coordinate: CLLocationCoordinate2D(latitude: coordinate.lat, longitude: coordinate.long), club: c)
                 mapView.addAnnotation(annotation)
                 
             }
@@ -243,7 +248,11 @@ class HomeController: UIViewController {
             }
             self?.clubs.removeAll()
             self?.refreshMap()
-            try? context.save()
+            do {
+                try context.save()
+            } catch {
+                print("error \(error)")
+            }
             self?.clubTable.reloadData()
         }))
         present(alert, animated: true, completion: nil)
@@ -289,17 +298,27 @@ extension HomeController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let context = appDelegate.persistentContainer.viewContext
+        let cl = clubs[indexPath.row]
         if editingStyle == .delete {
-            let club = clubs.remove(at: indexPath.row)
-            context.delete(club)
-            do {
-                try context.save()
-            } catch {
-                print("delete club failed")
-                return
+            
+            let alert = UIAlertController(title: "Delet Club \(cl.clubKey!)", message: "Do you want to delete this club?", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "No", style: .cancel)
+            let okAction = UIAlertAction(title: "Yes", style: .destructive) { _ in
+                let club = self.clubs.remove(at: indexPath.row)
+                context.delete(club)
+                do {
+                    try context.save()
+                } catch {
+                    print("delete club failed")
+                    return
+                }
+                tableView.reloadData()
+                self.refreshMap()
             }
-            tableView.reloadData()
-            refreshMap()
+            alert.addAction(cancelAction)
+            alert.addAction(okAction)
+            present(alert, animated: true)
+            
         }
     }
     
@@ -312,18 +331,55 @@ extension HomeController: MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        if annotation.coordinate.latitude == mapView.userLocation.coordinate.latitude && annotation.coordinate.longitude == mapView.userLocation.coordinate.longitude {
+            return nil
+        }
         let annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "annotationView")
         annotationView.canShowCallout = true
         annotationView.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
 
         return annotationView
     }
+    
+    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
+        if mapView.annotations.count == 1 {
+            let latDelta:CLLocationDegrees = 0.5
+            let lonDelta:CLLocationDegrees = 0.5
+            let span = MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: lonDelta)
+            let region = MKCoordinateRegion(center: userLocation.coordinate, span: span)
+            mapView.setRegion(region, animated: true)
+        }
+    }
 }
 
 extension HomeController: ClubSearchControllerDelegate {
     func clubsSearched(_ cbs: [ClubInfo], withResult res: Bool) {
+//        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+//        let context = appDelegate.persistentContainer.viewContext
         if res {
             clubs.append(contentsOf: cbs)
+            geocodingInBatch(clubs: clubs)
+//            for club in cbs {
+//                if club.geocode == nil {
+//                    if let addr = club.address, let city = club.city, let province = club.province, let zip = club.zip {
+//                        let address = "\(addr), \(city), \(province), \(zip)"
+//                            let geocoder = CLGeocoder()
+//                            geocoder.geocodeAddressString(address) { (placemarks, error) in
+//                                if let placemark = placemarks?.first, let lat = placemark.location?.coordinate.latitude, let long = placemark.location?.coordinate.longitude {
+//                                    let geocode = "\(lat),\(long)"
+//                                    print("geocode: \(geocode)")
+//                                    club.geocode = geocode
+//                                    try? context.save()
+//                                    self.clubTable.reloadData()
+//                                    self.refreshMap()
+//
+//                                }
+//                            }
+//
+//                    }
+//                }
+//            }
+            
             
             self.clubTable.reloadData()
             self.refreshMap()
@@ -335,6 +391,34 @@ extension HomeController: ClubSearchControllerDelegate {
             hud.dismiss(afterDelay: 2)
             print("clubs are empty")
         }
+    }
+    
+    private func geocodingInBatch(clubs: [ClubInfo]) {
+        guard !clubs.isEmpty else {
+            return
+        }
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        let context = appDelegate.persistentContainer.viewContext
+        guard let club = clubs.first else { return }
+        if club.geocode == nil {
+            if let addr = club.address, let city = club.city, let province = club.province, let zip = club.zip {
+                let address = "\(addr), \(city), \(province), \(zip)"
+                geocoder.geocodeAddressString(address) { [weak self] (placemarks, error) in
+                    if let placemark = placemarks?.first, let lat = placemark.location?.coordinate.latitude, let long = placemark.location?.coordinate.longitude {
+                        let geocode = "\(lat),\(long)"
+                        print("geocode: \(geocode)")
+                        club.geocode = geocode
+                        try? context.save()
+                        self?.clubTable.reloadData()
+                        self?.refreshMap()
+                    }
+                    self?.geocodingInBatch(clubs: Array(clubs.dropFirst()))
+                }
+            }
+        } else {
+            geocodingInBatch(clubs: Array(clubs.dropFirst()))
+        }
+        
     }
     
     func searchStarted() {

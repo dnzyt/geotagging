@@ -35,6 +35,8 @@ class LoginController: UIViewController {
         let ptf = UITextField()
         ptf.placeholder = "Password"
         ptf.translatesAutoresizingMaskIntoConstraints = false
+        ptf.isSecureTextEntry = true
+        
         return ptf
     }()
     
@@ -56,25 +58,84 @@ class LoginController: UIViewController {
     } ()
     
     @objc fileprivate func loginAction() {
-        
-        UserDefaults.standard.set(true, forKey: Defaults.authentication.rawValue)
-        
         UserDefaults.standard.set("id", forKey: Defaults.language_code.rawValue)
                 
         let questionsDownloaded = UserDefaults.standard.bool(forKey: Defaults.questions_downloaded.rawValue)
-        if questionsDownloaded {
-            print("questions are already downloaded.")
-            dismiss(animated: true)
-        } else {
-            
-            DispatchQueue.main.async {
-                self.hud.textLabel.text = "Authenticating..."
-                self.hud.show(in: self.view)
-            }
+        if !questionsDownloaded {
             downloadQuestions()
-            
         }
+//        if questionsDownloaded {
+//            print("questions are already downloaded.")
+//            dismiss(animated: true)
+//        } else {
+//            DispatchQueue.main.async {
+//                self.hud.textLabel.text = "Authenticating..."
+//                self.hud.show(in: self.view)
+//            }
+//            downloadQuestions()
+//        }
+        authenticateUser()
 
+    }
+    
+    private func authenticateUser() {
+        DispatchQueue.main.async {
+            self.hud.textLabel.text = "Authenticating..."
+            self.hud.detailTextLabel.text = nil
+            self.hud.indicatorView = JGProgressHUDIndeterminateIndicatorView()
+            self.hud.show(in: self.view)
+        }
+        guard let username = usernameTF.text else { return }
+        guard let password = passwordTF.text else { return }
+        
+        var dict = [String: String]()
+        dict["userName"] = username
+        dict["password"] = password
+        
+        guard let url = URL(string: "https://herbalife-econnectslc.hrbl.com:8443/CommonServices/rest/login/ldapLogin") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: dict, options: []) else { return }
+        request.httpBody = httpBody
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let _ = error {
+                DispatchQueue.main.async {
+                    self.hud.textLabel.text = "Autentication Failed"
+                    self.hud.detailTextLabel.text = "Cannot connect to the server, please try again later"
+                    self.hud.indicatorView = JGProgressHUDErrorIndicatorView()
+                    self.hud.indicatorView?.tintColor = .systemRed
+                    self.hud.dismiss(afterDelay: 2)
+                }
+                return
+            }
+            
+            let json = try! JSON(data: data!)
+            print("json: \(json)")
+            if let _ = json["errorMessage"].string {
+                print("authentication failed")
+                DispatchQueue.main.async {
+                    self.hud.textLabel.text = "Autentication Failed"
+                    self.hud.detailTextLabel.text = nil
+                    self.hud.indicatorView = JGProgressHUDErrorIndicatorView()
+                    self.hud.indicatorView?.tintColor = .systemRed
+                    self.hud.dismiss(afterDelay: 2)
+                }
+                return
+            } else {
+                UserDefaults.standard.set(true, forKey: Defaults.authentication.rawValue)
+                DispatchQueue.main.async {
+                    self.hud.dismiss(animated: true)
+                    self.dismiss(animated: true, completion: nil)
+                }
+            }
+            
+            
+        }.resume()
+        
+        
     }
     
     private func downloadQuestions() {
@@ -82,12 +143,12 @@ class LoginController: UIViewController {
         URLSession.shared.dataTask(with: url!) { data, response, error in
             
             if let response = response as? HTTPURLResponse, response.statusCode != 200 {
-                DispatchQueue.main.async {
-                    self.hud.textLabel.text = "Authentication Failed"
-                    self.hud.indicatorView = JGProgressHUDErrorIndicatorView()
-                    self.hud.indicatorView?.tintColor = .red
-                    self.hud.dismiss(afterDelay: 2)
-                }
+//                DispatchQueue.main.async {
+//                    self.hud.textLabel.text = "Authentication Failed"
+//                    self.hud.indicatorView = JGProgressHUDErrorIndicatorView()
+//                    self.hud.indicatorView?.tintColor = .red
+//                    self.hud.dismiss(afterDelay: 2)
+//                }
                 return
             }
             
@@ -95,11 +156,15 @@ class LoginController: UIViewController {
             
             DispatchQueue.main.async {
                 let res = self.storeQuestions(data: data)
-                self.hud.dismiss(animated: true)
+//                self.hud.dismiss(animated: true)
                 if res {
-                    self.dismiss(animated: true)
+//                    self.dismiss(animated: true)
+                    UserDefaults.standard.set(true, forKey: Defaults.questions_downloaded.rawValue)
                 } else {
-                    print("download questions failed")
+                    let alert = UIAlertController(title: "Server Error", message: "Server is not responding, please logout and try again later.", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                    alert.addAction(okAction)
+                    self.present(alert, animated: true, completion: nil)
                 }
             }
         }.resume()
@@ -130,7 +195,6 @@ class LoginController: UIViewController {
         }
         do {
             try context.save()
-            UserDefaults.standard.set(true, forKey: Defaults.questions_downloaded.rawValue)
             return true
 
         } catch {
