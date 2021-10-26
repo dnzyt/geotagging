@@ -64,16 +64,6 @@ class LoginController: UIViewController {
         if !questionsDownloaded {
             downloadQuestions()
         }
-//        if questionsDownloaded {
-//            print("questions are already downloaded.")
-//            dismiss(animated: true)
-//        } else {
-//            DispatchQueue.main.async {
-//                self.hud.textLabel.text = "Authenticating..."
-//                self.hud.show(in: self.view)
-//            }
-//            downloadQuestions()
-//        }
         authenticateUser()
 
     }
@@ -139,69 +129,87 @@ class LoginController: UIViewController {
     }
     
     private func downloadQuestions() {
-        let url = URL(string: Constatns.url + "/questions")
-        URLSession.shared.dataTask(with: url!) { data, response, error in
-            
-            if let response = response as? HTTPURLResponse, response.statusCode != 200 {
-//                DispatchQueue.main.async {
-//                    self.hud.textLabel.text = "Authentication Failed"
-//                    self.hud.indicatorView = JGProgressHUDErrorIndicatorView()
-//                    self.hud.indicatorView?.tintColor = .red
-//                    self.hud.dismiss(afterDelay: 2)
-//                }
+        guard let url = URL(string: Constatns.url + Constatns.getLabels) else { return }
+        var dict = [String: String]()
+        dict["CountryCode"] = "ID"
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: dict, options: []) else { return }
+        request.httpBody = httpBody
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if error != nil {
+                DispatchQueue.main.async {
+                    self.showDownloadingFailed()
+                }
                 return
+                
             }
-            
-            guard let data = data else { return }
-            
-            DispatchQueue.main.async {
-                let res = self.storeQuestions(data: data)
-//                self.hud.dismiss(animated: true)
-                if res {
-//                    self.dismiss(animated: true)
-                    UserDefaults.standard.set(true, forKey: Defaults.questions_downloaded.rawValue)
-                } else {
-                    let alert = UIAlertController(title: "Server Error", message: "Server is not responding, please logout and try again later.", preferredStyle: .alert)
-                    let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-                    alert.addAction(okAction)
-                    self.present(alert, animated: true, completion: nil)
+            if let data = data {
+                do {
+                    let json = try JSON(data: data)
+                    print("json: \(json)")
+                    
+                    DispatchQueue.main.async {
+                        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+                        let context = appDelegate.persistentContainer.viewContext
+                        
+                        var index = 0
+                        
+                        if let errorCode = json["ErrorCode"].string, errorCode == "0" {
+                            if let newJson = json["Labels"].array {
+                                for subJson in newJson {
+                                    let question = QuestionInfo(context: context)
+                                    question.categoryId = subJson["CategoryId"].stringValue
+                                    question.orderIndex = Int16(index)
+                                    index += 1
+                                    question.label = subJson["Label"].stringValue
+                                    question.needComment = subJson["NeedComment"].stringValue
+                                    question.questionKey = subJson["QuestionKey"].stringValue
+                                    question.questionType = subJson["QuestionType"].stringValue
+                                    if let items = subJson["Items"].array {
+                                        for i in items {
+                                            let dropdownOption = LabelInfo(context: context)
+                                            dropdownOption.labelKey = i["ItemKey"].stringValue
+                                            dropdownOption.labelValue = i["ItemValue"].stringValue
+                                            question.addToItems(dropdownOption)
+                                        }
+                                    }
+                                }
+                                do {
+                                    try context.save()
+                                    UserDefaults.standard.set(true, forKey: Defaults.questions_downloaded.rawValue)
+                                } catch {
+                                    print("saving questions failed")
+                                    self.showDownloadingFailed()
+                                }
+                            } else {
+                                self.showDownloadingFailed()
+                            }
+                        } else {
+                            self.showDownloadingFailed()
+                        }
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        self.showDownloadingFailed()
+                    }
                 }
             }
         }.resume()
-    }
-    
-
-    
-    private func storeQuestions(data: Data) -> Bool {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return false }
-        let context = appDelegate.persistentContainer.viewContext
         
-        let json = try! JSON(data: data)
-        print("json: \(json)")
-        for (_, subJson): (String, JSON) in json {
-            let question = QuestionInfo(context: context)
-            question.categoryId = subJson["categoryId"].stringValue
-            question.label = subJson["label"].stringValue
-            question.needComment = subJson["needComment"].stringValue
-            question.questionKey = subJson["questionKey"].stringValue
-            question.questionType = subJson["questionType"].stringValue
-            let items = subJson["items"].arrayValue
-            for i in items {
-                let dropdownOption = LabelInfo(context: context)
-                dropdownOption.labelKey = i["itemKey"].stringValue
-                dropdownOption.labelValue = i["itemValue"].stringValue
-                question.addToItems(dropdownOption)
-            }
-        }
-        do {
-            try context.save()
-            return true
-
-        } catch {
-            print("saving questions failed")
-            return false
-        }
     }
+    
+
+    private func showDownloadingFailed() {
+        let alert = UIAlertController(title: "Server Error", message: "Server is not responding, please logout and try again later.", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+        alert.addAction(okAction)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    
     
     let inputsContainer: UIStackView = {
         let sv = UIStackView()

@@ -10,10 +10,13 @@ import Foundation
 struct Constatns {
     static let authentication = "AUTHENTICATION"
     #if DEV
-    static let url = "https://4ea2949f-0a61-4c5c-b0e0-ff7defd83600.mock.pstmn.io"
+    static let url = "https://herbalife-oegdevws.hrbl.com/Distributor/NClubGeoTrackRS"
     #else
     static let url = "PORD URL"
     #endif
+    static let getLabels = "/NClubGetLabelDetails"
+    static let updateGeoTrack = "/NClubUpdateGeoTrackDtls"
+    static let getClubs = "/NClubGetClubDetails"
 }
 
 enum Defaults: String {

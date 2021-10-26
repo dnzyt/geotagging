@@ -20,6 +20,7 @@ class QuestionController: UIViewController {
             } else {
                 table.allowsMultipleSelection = false
             }
+            questionLbl.text = answer?.label
         }
     }
     var completionHandler: (() -> ())?
@@ -28,7 +29,7 @@ class QuestionController: UIViewController {
     
     let table: UITableView = {
         let t = UITableView()
-        t.backgroundColor = .yellow
+        t.backgroundColor = .white
         t.translatesAutoresizingMaskIntoConstraints = false
         t.register(AnswerCell.self, forCellReuseIdentifier: QuestionController.cellId)
         t.alwaysBounceVertical = false
@@ -48,7 +49,6 @@ class QuestionController: UIViewController {
         ql.font = UIFont(name: "GillSans-SemiBoldItalic", size: 14)
         ql.translatesAutoresizingMaskIntoConstraints = false
         ql.textColor = .hbGreen
-        ql.text = "1. Activities in Nutrition Club; activities to support customer program in Nutrition Club"
         
         return ql
     }()
@@ -154,7 +154,9 @@ class QuestionController: UIViewController {
     override func viewDidLayoutSubviews() {
         let num = table.numberOfRows(inSection: 0)
         let cell = table.cellForRow(at: IndexPath(row: 0, section: 0))
-        table.heightAnchor.constraint(equalToConstant:cell!.frame.height * CGFloat(num)).isActive = true
+        let height = cell!.frame.height * CGFloat(num)
+        
+        table.heightAnchor.constraint(equalToConstant:height > 300 ? 300 : height).isActive = true
         
         let circle = CAShapeLayer()
         circle.path = UIBezierPath(ovalIn: CGRect(x: -6, y: -6, width: okBtn.frame.width + 12, height: okBtn.frame.height + 12)).cgPath

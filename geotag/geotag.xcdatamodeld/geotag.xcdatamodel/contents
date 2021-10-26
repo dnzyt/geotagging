@@ -48,6 +48,7 @@
         <attribute name="countryCode" optional="YES" attributeType="String"/>
         <attribute name="label" optional="YES" attributeType="String"/>
         <attribute name="needComment" optional="YES" attributeType="String"/>
+        <attribute name="orderIndex" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="questionKey" optional="YES" attributeType="String"/>
         <attribute name="questionType" optional="YES" attributeType="String"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="LabelInfo" inverseName="question" inverseEntity="LabelInfo"/>
@@ -57,15 +58,15 @@
         <attribute name="finished" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="submitted" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="visitDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="answers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AnswerInfo" inverseName="visitInfo" inverseEntity="AnswerInfo"/>
+        <relationship name="answers" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AnswerInfo" inverseName="visitInfo" inverseEntity="AnswerInfo"/>
     </entity>
     <elements>
         <element name="AnswerInfo" positionX="-103.15283203125" positionY="-192.7849731445312" width="128" height="179"/>
         <element name="ClubInfo" positionX="-15.036865234375" positionY="-507.7122802734374" width="128" height="268"/>
         <element name="DropDownItem" positionX="227.9443359375" positionY="-282.2090454101562" width="128" height="74"/>
         <element name="LabelInfo" positionX="86.150634765625" positionY="82.04071044921875" width="131.949462890625" height="88"/>
-        <element name="QuestionInfo" positionX="-507.5576171875" positionY="21.971923828125" width="196.4769287109375" height="148"/>
         <element name="OfflineGeocode" positionX="205.98046875" positionY="-464.2579345703125" width="128" height="59"/>
-        <element name="VisitInfo" positionX="-474.527099609375" positionY="-281.3405151367188" width="148.694580078125" height="118"/>
+        <element name="QuestionInfo" positionX="-507.5576171875" positionY="21.971923828125" width="196.4769287109375" height="149"/>
+        <element name="VisitInfo" positionX="-474.527099609375" positionY="-281.3405151367188" width="148.694580078125" height="104"/>
     </elements>
 </model>

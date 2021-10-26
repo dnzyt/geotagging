@@ -9,12 +9,19 @@ import UIKit
 import CoreLocation
 import JGProgressHUD
 import Reachability
+import SwiftyJSON
+
+protocol VisitPrepareControllerDelegate: AnyObject {
+    func geoTaggingFininshed(with geocode: String, club: ClubInfo, success: Bool)
+}
 
 class VisitPrepareController: UIViewController {
     
     static let cellId = "visitPrepareCellId"
     
     let hud = JGProgressHUD()
+    
+    weak var delegate: VisitPrepareControllerDelegate?
     
     var club: ClubInfo?
     
@@ -190,6 +197,8 @@ class VisitPrepareController: UIViewController {
             visitInfo.visitDate = Date()
             
             let fq = QuestionInfo.fetchRequest()
+            let sortDesc = NSSortDescriptor(key: "orderIndex", ascending: true)
+            fq.sortDescriptors = [sortDesc]
             if let res = try? context.fetch(fq) {
                 for q in res {
                     let ans = AnswerInfo(context: context)
@@ -227,11 +236,7 @@ class VisitPrepareController: UIViewController {
             return
         }
         
-        DispatchQueue.main.async {
-            self.hud.textLabel.text = "Searching geocode..."
-            self.hud.indicatorView = JGProgressHUDIndeterminateIndicatorView()
-            self.hud.show(in: self.view.window!)
-        }
+
         
         let authStatus = locationManager.authorizationStatus
         if authStatus == .notDetermined {
@@ -241,6 +246,13 @@ class VisitPrepareController: UIViewController {
             showLocationServiceDeniedAlert()
             return
         }
+        
+        DispatchQueue.main.async {
+            self.hud.textLabel.text = "Searching geocode..."
+            self.hud.indicatorView = JGProgressHUDIndeterminateIndicatorView()
+            self.hud.show(in: self.view.window!)
+        }
+        
         locationManager.startUpdatingLocation()
         updatingLocation = true
         lastLocationError = nil
@@ -275,6 +287,15 @@ class VisitPrepareController: UIViewController {
         }
     }
     
+    private func dismissJGPIndicator(mainText: String, success: Bool) {
+        DispatchQueue.main.async {
+            self.hud.textLabel.text = mainText
+            self.hud.indicatorView = success ? JGProgressHUDSuccessIndicatorView() : JGProgressHUDErrorIndicatorView()
+            self.hud.detailTextLabel.text = nil
+            self.hud.dismiss(afterDelay: 3)
+        }
+    }
+    
     func updateGeocode(_ geocode: String, for club: ClubInfo) {
         DispatchQueue.main.async {
             self.hud.textLabel.text = "Updating geocode"
@@ -284,14 +305,47 @@ class VisitPrepareController: UIViewController {
             if !self.hud.isVisible {
                 self.hud.show(in: self.view.window!, animated: true)
             }
-            self.hud.dismiss(afterDelay: 5)
         }
         
         let reachability = try! Reachability()
         if reachability.connection != .unavailable {
-            print("internet connection available")
+            guard let url = URL(string: Constatns.url + Constatns.updateGeoTrack) else { return }
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            var dict = [String: String]()
+            dict["ClubKey"] = club.clubKey!
+            dict["GeoCode"] = geocode
+            guard let httpBody = try? JSONSerialization.data(withJSONObject: dict, options: []) else { return }
+            request.httpBody = httpBody
+            
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let _ = error {
+                    self.dismissJGPIndicator(mainText: "Geocode Updated!", success: false)
+                    return
+                }
+                
+                if let data = data {
+                    do {
+                        let json = try JSON(data: data)
+                        if let errorCode = json["ErrorCode"].string, errorCode == "0" {
+                            self.dismissJGPIndicator(mainText: "Geocode Updated!", success: true)
+                            self.delegate?.geoTaggingFininshed(with: geocode, club: club, success: true)
+                        } else {
+                            self.dismissJGPIndicator(mainText: "Geocode Updated!", success: false)
+                        }
+                        
+                    } catch {
+                        self.dismissJGPIndicator(mainText: "Geocode Updated!", success: false)
+                    }
+                } else {
+                    self.dismissJGPIndicator(mainText: "Geocode Updated!", success: false)
+                }
+            }.resume()
         } else {
             print("internet connection not available")
+            self.dismissJGPIndicator(mainText: "Cached Offline!", success: true)
         }
         
     }
@@ -360,12 +414,6 @@ extension VisitPrepareController: CLLocationManagerDelegate {
                     // directly call service to update geocode
                     updateGeocode(geocodeString, for: club!)
 
-                    
-                    
-//                    let alert = UIAlertController(title: "Geo Tagging", message: "The geocode of the club has been updated", preferredStyle: .alert)
-//                    let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
-//                    alert.addAction(okAction)
-//                    present(alert, animated: true, completion: nil)
                 }
             }
         }

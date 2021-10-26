@@ -281,6 +281,7 @@ extension HomeController: UITableViewDataSource {
     private func showPrepareController(club: ClubInfo) {
         let qc = VisitPrepareController()
         qc.club = club
+        qc.delegate = self
         qc.isModalInPresentation = true
 
         let nav = UINavigationController(rootViewController: qc)
@@ -354,33 +355,10 @@ extension HomeController: MKMapViewDelegate {
 
 extension HomeController: ClubSearchControllerDelegate {
     func clubsSearched(_ cbs: [ClubInfo], withResult res: Bool) {
-//        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-//        let context = appDelegate.persistentContainer.viewContext
         if res {
             clubs.append(contentsOf: cbs)
             geocodingInBatch(clubs: clubs)
-//            for club in cbs {
-//                if club.geocode == nil {
-//                    if let addr = club.address, let city = club.city, let province = club.province, let zip = club.zip {
-//                        let address = "\(addr), \(city), \(province), \(zip)"
-//                            let geocoder = CLGeocoder()
-//                            geocoder.geocodeAddressString(address) { (placemarks, error) in
-//                                if let placemark = placemarks?.first, let lat = placemark.location?.coordinate.latitude, let long = placemark.location?.coordinate.longitude {
-//                                    let geocode = "\(lat),\(long)"
-//                                    print("geocode: \(geocode)")
-//                                    club.geocode = geocode
-//                                    try? context.save()
-//                                    self.clubTable.reloadData()
-//                                    self.refreshMap()
-//
-//                                }
-//                            }
-//
-//                    }
-//                }
-//            }
-            
-            
+
             self.clubTable.reloadData()
             self.refreshMap()
             hud.dismiss(animated: true)
@@ -424,7 +402,23 @@ extension HomeController: ClubSearchControllerDelegate {
     func searchStarted() {
         DispatchQueue.main.async {
             self.hud.textLabel.text = "Searching clubs"
+            self.hud.detailTextLabel.text = ""
+            self.hud.indicatorView = JGProgressHUDIndeterminateIndicatorView()
             self.hud.show(in: self.view)
+        }
+    }
+}
+extension HomeController: VisitPrepareControllerDelegate {
+    func geoTaggingFininshed(with geocode: String, club: ClubInfo, success: Bool) {
+        if success {
+            DispatchQueue.main.async {
+                guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+                let context = appDelegate.persistentContainer.viewContext
+                club.geocode = geocode
+                try? context.save()
+                self.clubTable.reloadData()
+                self.refreshMap()
+            }
         }
     }
 }

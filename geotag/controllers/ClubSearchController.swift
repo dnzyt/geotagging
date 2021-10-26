@@ -116,11 +116,11 @@ class ClubSearchController: UIViewController {
         var dict = [String: String]()
         if let content = searchContent {
             if activeField == 1 {
-                dict["clubKey"] = content
-                dict["dsId"] = ""
+                dict["ClubKey"] = content
+                dict["DistributorId"] = ""
             } else if activeField == 2 {
-                dict["clubKey"] = ""
-                dict["dsId"] = content
+                dict["ClubKey"] = ""
+                dict["DistributorId"] = content.uppercased()
             }
             delegate?.searchStarted()
         } else {
@@ -129,7 +129,7 @@ class ClubSearchController: UIViewController {
         
         
         
-        guard let url = URL(string: Constatns.url + "/clubs") else { return }
+        guard let url = URL(string: Constatns.url + Constatns.getClubs) else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -159,52 +159,56 @@ class ClubSearchController: UIViewController {
                     
                     let json = try! JSON(data: data)
                     print("json: \(json)")
-                    var res = [ClubInfo]()
-                    for (_, subJson): (String, JSON) in json {
-                        let ck = subJson["clubKey"].stringValue
-                        var exists = false
-                        for club in existingClubs {
-                            if let clubKey = club.clubKey {
-                                if clubKey == ck {
-                                    exists = true
-                                    break
+                    if let errorCode = json["ErrorCode"].string, errorCode == "0" {
+                        var res = [ClubInfo]()
+                        let newJson = json["GetClubDetails"].arrayValue
+                        for subJson in newJson {
+                            let ck = subJson["clubKey"].stringValue
+                            var exists = false
+                            for club in existingClubs {
+                                if let clubKey = club.clubKey {
+                                    if clubKey == ck {
+                                        exists = true
+                                        break
+                                    }
                                 }
                             }
-                        }
-                        if exists {
-                            continue
+                            if exists {
+                                continue
+                            }
+                            
+                            let club = ClubInfo(context: context)
+                            club.clubKey = subJson["ClubKey"].stringValue
+                            club.clubName = subJson["ClubName"].stringValue
+                            club.address = subJson["Address"].stringValue
+                            club.city = subJson["City"].stringValue
+                            club.province = subJson["Province"].stringValue
+                            club.zip = subJson["Zip"].stringValue
+                            club.phone = subJson["Phone"].stringValue
+                            club.clubType = subJson["ClubType"].stringValue
+                            club.clubStatus = subJson["ClubStatus"].stringValue
+                            club.openDate = subJson["Opendate"].stringValue
+                            club.primaryDsId = subJson["PrimaryDsId"].stringValue
+                            club.primaryDsName = subJson["PrimaryDsName"].stringValue
+                            club.uplineName = subJson["UplineName"].stringValue
+                            if let geocode = subJson["GeoCode"].string, geocode != "" {
+                                club.geocode = geocode
+                            }
+                            res.append(club)
                         }
                         
-                        let club = ClubInfo(context: context)
-                        club.clubKey = subJson["clubKey"].stringValue
-                        club.clubName = subJson["clubName"].stringValue
-                        club.address = subJson["address"].stringValue
-                        club.city = subJson["city"].stringValue
-                        club.province = subJson["province"].stringValue
-                        club.zip = subJson["zip"].stringValue
-                        club.phone = subJson["phone"].stringValue
-                        club.clubType = subJson["clubType"].stringValue
-                        club.clubStatus = subJson["clubStatus"].stringValue
-                        club.openDate = subJson["opendate"].stringValue
-                        club.primaryDsId = subJson["primaryDsId"].stringValue
-                        club.primaryDsName = subJson["primaryDsName"].stringValue
-                        club.uplineName = subJson["uplineName"].stringValue
-//                        if let geocode = subJson["geocode"].string {
-//                            club.geocode = geocode
-//                        }
-                        res.append(club)
-                    }
-                    
-                    do {
-                        try context.save()
-                        self.delegate?.clubsSearched(res, withResult: true)
+                        do {
+                            try context.save()
+                            self.delegate?.clubsSearched(res, withResult: true)
 
-                    } catch {
-                        print("saving clubs failed")
-                        self.delegate?.clubsSearched(res, withResult: false)
+                        } catch {
+                            print("saving clubs failed")
+                            self.delegate?.clubsSearched(res, withResult: false)
 
+                        }
+                    } else {
+                        self.delegate?.clubsSearched([], withResult: false)
                     }
-                    
                 }
             }
         }.resume()

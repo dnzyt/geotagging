@@ -2,7 +2,7 @@
 //  QuestionInfo+CoreDataProperties.swift
 //  geotag
 //
-//  Created by Ningze Dai on 10/19/21.
+//  Created by Ningze Dai on 10/26/21.
 //
 //
 
@@ -22,6 +22,7 @@ extension QuestionInfo {
     @NSManaged public var needComment: String?
     @NSManaged public var questionKey: String?
     @NSManaged public var questionType: String?
+    @NSManaged public var orderIndex: Int16
     @NSManaged public var items: NSOrderedSet?
 
 }
