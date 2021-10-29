@@ -101,32 +101,39 @@ class HBSplitViewController: UISplitViewController {
     }
     
     @objc fileprivate func submit() {
-        var dict = [String: Any]()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MM-dd-YYYY"
-        dict["ClubKey"] = visitInfo!.clubKey!
-        dict["VisitDate"] = dateFormatter.string(from:(visitInfo!.visitDate!))
-        var ans = [Any]()
-        visitInfo!.answers!.enumerateObjects { elem, idx, _ in
-            let a = elem as! AnswerInfo
-            var temp = [String: Any]()
-            temp["QuestionType"] = a.questionType!
-            temp["QuestionKey"] = a.questionKey!
-            if let comment = a.comment {
-                temp["Comment"] = comment
-            }
-            temp["CategoryId"] = a.categoryId!
-            var tempAns = [String]()
-            
-            for idx in a.ans! {
-                let ddi = a.items?.object(at: idx) as! DropDownItem
-                tempAns.append(ddi.labelKey!)
-            }
-            temp["Answers"] = tempAns
-            ans.append(temp)
+        
+        if let menuController = menuController {
+            menuController.menuTable.selectRow(at: IndexPath(item: 2, section: 0), animated: true, scrollPosition: .none)
+            menuController.tableView(menuController.menuTable, didSelectRowAt: IndexPath(item: 2, section: 0))
         }
-        dict["Questions"] = ans
-        print("request body: \(dict)")
+        
+        
+//        var dict = [String: Any]()
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "MM-dd-YYYY"
+//        dict["ClubKey"] = visitInfo!.clubKey!
+//        dict["VisitDate"] = dateFormatter.string(from:(visitInfo!.visitDate!))
+//        var ans = [Any]()
+//        visitInfo!.answers!.enumerateObjects { elem, idx, _ in
+//            let a = elem as! AnswerInfo
+//            var temp = [String: Any]()
+//            temp["QuestionType"] = a.questionType!
+//            temp["QuestionKey"] = a.questionKey!
+//            if let comment = a.comment {
+//                temp["Comment"] = comment
+//            }
+//            temp["CategoryId"] = a.categoryId!
+//            var tempAns = [String]()
+//
+//            for idx in a.ans! {
+//                let ddi = a.items?.object(at: idx) as! DropDownItem
+//                tempAns.append(ddi.labelKey!)
+//            }
+//            temp["Answers"] = tempAns
+//            ans.append(temp)
+//        }
+//        dict["Questions"] = ans
+//        print("request body: \(dict)")
     }
     
     fileprivate func backToHome() {
@@ -160,8 +167,11 @@ extension HBSplitViewController: MenuControllerDelegate {
         }
         
         showDetailViewController(currentVC!, sender: self)
-        hide(.primary)
         
+    }
+    
+    func hideMenu() {
+        hide(.primary)
     }
     
     

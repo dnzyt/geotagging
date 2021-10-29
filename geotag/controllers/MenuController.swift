@@ -9,6 +9,7 @@ import UIKit
 
 protocol MenuControllerDelegate: AnyObject {
     func menuTable(_ menuTable: UITableView, didSelectItemAt index: Int)
+    func hideMenu()
 }
 
 class MenuController: UIViewController {
@@ -27,12 +28,26 @@ class MenuController: UIViewController {
         
         return mt
     }()
+    
+    let hideBTN: UIButton = {
+        let lbtn = UIButton()
+        lbtn.setTitle("Hide Menu", for: .normal)
+        lbtn.backgroundColor = UIColor(r: 61, g: 91, b: 151)
+        lbtn.translatesAutoresizingMaskIntoConstraints = false
+        
+        lbtn.addTarget(self, action: #selector(hideMenuAction), for: .touchUpInside)
+        return lbtn
+    } ()
 
+    @objc private func hideMenuAction() {
+        delegate?.hideMenu()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupNavigationBar()
-        setupMenuTable()
+        setupUI()
         let indexPath = IndexPath(row: 0, section: 0)
         menuTable.selectRow(at: indexPath, animated: false, scrollPosition: .none)
     }
@@ -52,8 +67,9 @@ class MenuController: UIViewController {
 
     }
     
-    fileprivate func setupMenuTable() {
+    fileprivate func setupUI() {
         view.addSubview(menuTable)
+        view.addSubview(hideBTN)
         
         menuTable.delegate = self
         menuTable.dataSource = self
@@ -61,8 +77,11 @@ class MenuController: UIViewController {
         NSLayoutConstraint.activate([
             menuTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             menuTable.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            menuTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            menuTable.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+            menuTable.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            menuTable.bottomAnchor.constraint(equalTo: hideBTN.topAnchor),
+            hideBTN.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            hideBTN.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            hideBTN.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ])
         
     }
