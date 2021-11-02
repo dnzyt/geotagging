@@ -354,20 +354,19 @@ extension HomeController: MKMapViewDelegate {
 }
 
 extension HomeController: ClubSearchControllerDelegate {
-    func clubsSearched(_ cbs: [ClubInfo], withResult res: Bool) {
+    func clubsSearched(_ cbs: [ClubInfo], withResult res: Bool, and message: String?) {
         if res {
             clubs.append(contentsOf: cbs)
             geocodingInBatch(clubs: clubs)
-
             self.clubTable.reloadData()
             self.refreshMap()
             hud.dismiss(animated: true)
         } else {
             hud.textLabel.text = "Search Failed."
+            hud.detailTextLabel.text = message
             hud.indicatorView = JGProgressHUDErrorIndicatorView()
             hud.indicatorView?.tintColor = .red
             hud.dismiss(afterDelay: 2)
-            print("clubs are empty")
         }
     }
     

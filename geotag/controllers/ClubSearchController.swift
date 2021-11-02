@@ -11,7 +11,7 @@ import CoreLocation
 
 protocol ClubSearchControllerDelegate: AnyObject {
     func searchStarted()
-    func clubsSearched(_ clubs: [ClubInfo], withResult res: Bool)
+    func clubsSearched(_ clubs: [ClubInfo], withResult res: Bool, and message: String?)
 }
 
 
@@ -139,7 +139,7 @@ class ClubSearchController: UIViewController {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let _ = error {
-                self.delegate?.clubsSearched([], withResult: false)
+                self.delegate?.clubsSearched([], withResult: false, and: "Internal Server Error")
                 return
             }
             if let data = data {
@@ -159,7 +159,7 @@ class ClubSearchController: UIViewController {
                     
                     let json = try! JSON(data: data)
                     print("json: \(json)")
-                    if let errorCode = json["ErrorCode"].string, errorCode == "0" {
+                    if let errorCode = json["ErrorCode"].string, errorCode == "0", let errorMessage = json["ErrorMessage"].string {
                         var res = [ClubInfo]()
                         let newJson = json["GetClubDetails"].arrayValue
                         for subJson in newJson {
@@ -199,15 +199,15 @@ class ClubSearchController: UIViewController {
                         
                         do {
                             try context.save()
-                            self.delegate?.clubsSearched(res, withResult: true)
+                            self.delegate?.clubsSearched(res, withResult: true, and: nil)
 
                         } catch {
                             print("saving clubs failed")
-                            self.delegate?.clubsSearched(res, withResult: false)
+                            self.delegate?.clubsSearched(res, withResult: false, and: errorMessage)
 
                         }
                     } else {
-                        self.delegate?.clubsSearched([], withResult: false)
+                        self.delegate?.clubsSearched([], withResult: false, and: "Internal Server Error")
                     }
                 }
             }
