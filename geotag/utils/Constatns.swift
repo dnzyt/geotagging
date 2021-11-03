@@ -17,6 +17,7 @@ struct Constatns {
     static let getLabels = "/NClubGetLabelDetails"
     static let updateGeoTrack = "/NClubUpdateGeoTrackDtls"
     static let getClubs = "/NClubGetClubDetails"
+    static let createVisit = "/NClubCreateVisitDetails"
 }
 
 enum Defaults: String {

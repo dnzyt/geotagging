@@ -14,6 +14,13 @@ class ClubCell: UITableViewCell {
             ckLbl.text = club!.clubKey
             addressContentbl.text = club!.address
             clubNameContentsLbl.text = club!.clubName
+            if club!.hasBeenVisited {
+                mapPin.image = UIImage(systemName: "checkmark.seal.fill")
+                mapPin.tintColor = .systemBlue
+            } else {
+                mapPin.image = UIImage(systemName: "square.3.stack.3d.top.filled")
+                mapPin.tintColor = .systemGray
+            }
         }
     }
     
@@ -165,7 +172,7 @@ class ClubCell: UITableViewCell {
     
     let mapPin: UIImageView = {
         let mp = UIImageView()
-        mp.image = UIImage(systemName: "mappin.and.ellipse")
+        mp.image = UIImage(systemName: "checkmark.seal.fill")
         mp.tintColor = .systemBlue
         mp.translatesAutoresizingMaskIntoConstraints = false
         

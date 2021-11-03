@@ -67,7 +67,7 @@ class VisitPrepareController: UIViewController {
         view.backgroundColor = .white
 
         locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         locationManager.requestWhenInUseAuthorization()
         
         table.register(VisitPrepareCell.self, forCellReuseIdentifier: VisitPrepareController.cellId)

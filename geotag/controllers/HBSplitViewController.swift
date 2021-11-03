@@ -6,11 +6,15 @@
 //
 
 import UIKit
+import SwiftyJSON
+import JGProgressHUD
+
 
 class HBSplitViewController: UISplitViewController {
     
     var visitInfo: VisitInfo?
-    
+    let hud = JGProgressHUD()
+
     var menuController: MenuController?
     private var businessNavController: UINavigationController?
     private var trainingNavController: UINavigationController?
@@ -100,49 +104,172 @@ class HBSplitViewController: UISplitViewController {
         
     }
     
-    @objc fileprivate func submit() {
-        
-        if let menuController = menuController {
-            menuController.menuTable.selectRow(at: IndexPath(item: 2, section: 0), animated: true, scrollPosition: .none)
-            menuController.tableView(menuController.menuTable, didSelectRowAt: IndexPath(item: 2, section: 0))
+    @objc private func submit() {
+        visitInfo!.answers!.enumerateObjects { elem, idx, stop in
+            let a = elem as! AnswerInfo
+            guard let qType = a.questionType else {
+                stop.pointee = true
+                return
+            }
+            var result = true
+            var category: Int? = -1
+            var errorMessage: String? = ""
+            if qType == "MULTI_SELECT" {
+                (result, category, errorMessage) = validateDropdown(answer: a)
+            } else if qType == "SINGLE_SELECT" {
+                (result, category, errorMessage) = validateDropdown(answer: a)
+            } else if qType == "USER_ENTRY" {
+                (result, category, errorMessage) = validateTextBox(answer: a)
+            }
+
+            if !result {
+                if let menuController = menuController {
+                    menuController.menuTable.selectRow(at: IndexPath(item: category!, section: 0), animated: true, scrollPosition: .none)
+                    menuController.tableView(menuController.menuTable, didSelectRowAt: IndexPath(item: category!, section: 0))
+                }
+                let alert = UIAlertController(title: "Incomplete Answers", message: errorMessage, preferredStyle: .alert)
+                let dismissAction = UIAlertAction(title: "Dismiss", style: .cancel, handler: nil)
+                alert.addAction(dismissAction)
+                present(alert, animated: true, completion: nil)
+                stop.pointee = true
+                return
+            }
         }
         
+        self.hud.textLabel.text = "Submitting visit..."
+        self.hud.detailTextLabel.text = nil
+        self.hud.indicatorView = JGProgressHUDIndeterminateIndicatorView()
+        self.hud.show(in: self.view)
         
-//        var dict = [String: Any]()
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "MM-dd-YYYY"
-//        dict["ClubKey"] = visitInfo!.clubKey!
-//        dict["VisitDate"] = dateFormatter.string(from:(visitInfo!.visitDate!))
-//        var ans = [Any]()
-//        visitInfo!.answers!.enumerateObjects { elem, idx, _ in
-//            let a = elem as! AnswerInfo
-//            var temp = [String: Any]()
-//            temp["QuestionType"] = a.questionType!
-//            temp["QuestionKey"] = a.questionKey!
-//            if let comment = a.comment {
-//                temp["Comment"] = comment
-//            }
-//            temp["CategoryId"] = a.categoryId!
-//            var tempAns = [String]()
-//
-//            for idx in a.ans! {
-//                let ddi = a.items?.object(at: idx) as! DropDownItem
-//                tempAns.append(ddi.labelKey!)
-//            }
-//            temp["Answers"] = tempAns
-//            ans.append(temp)
-//        }
-//        dict["Questions"] = ans
-//        print("request body: \(dict)")
+        guard let url = URL(string: Constatns.url + Constatns.createVisit) else { return }
+        let dict = prepareRequestBody()
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: dict, options: []) else { return }
+        request.httpBody = httpBody
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if error != nil {
+                // show error message and then go back
+                self.showFailureAlert()
+                return
+            }
+            if let data = data {
+                do {
+                    let json = try JSON(data: data)
+                    print("create visit response json: \(json)")
+                    if let errorCode = json["ErrorCode"].string, errorCode == "0" {
+                        self.showSuccessAlert(visitNumber: json["VisitNumber"].stringValue)
+                    } else {
+                        self.showFailureAlert()
+                    }
+                } catch {
+                    self.showFailureAlert()
+                }
+                return
+            } else {
+                self.showFailureAlert()
+            }
+            
+        }.resume()
+        
     }
     
-    fileprivate func backToHome() {
+    private func showFailureAlert() {
+        DispatchQueue.main.async {
+            self.hud.textLabel.text = "Visit submission failed."
+            self.hud.detailTextLabel.text = "Server cannot process this visit."
+            self.hud.indicatorView = JGProgressHUDErrorIndicatorView()
+            self.hud.dismiss(afterDelay: 3, animated: true) { [weak self] in
+                self?.backToHome()
+            }
+        }
+    }
+    
+    private func showSuccessAlert(visitNumber: String) {
+        DispatchQueue.main.async {
+            self.hud.textLabel.text = "Visit submission successful."
+            self.hud.detailTextLabel.text = "Visit number: \(visitNumber)"
+            self.hud.indicatorView = JGProgressHUDSuccessIndicatorView()
+            self.hud.dismiss(afterDelay: 3, animated: true) { [weak self] in
+                self?.backToHome()
+            }
+        }
+    }
+    
+    private func backToHome() {
         guard let window = self.view.window else { return }
         let nav = HBNavigationController(rootViewController: HomeController())
         UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve) {
             window.rootViewController = nav
         }
     }
+    
+    private func validateDropdown(answer: AnswerInfo) -> (Bool, Int?, String?) {
+        if answer.ans!.count == 0 {
+            return (false, Int(answer.categoryId!)!, "Select one option from the menu at lease.")
+        }
+        
+        for idx in answer.ans! {
+            let ddi = answer.items?.object(at: idx) as! DropDownItem
+            if ddi.labelKey! == "OTHERS" {
+                if let comment = answer.comment {
+                    if comment.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
+                        return (false, Int(answer.categoryId!)!, "Comment is mandatory when Other is selected.")
+                    }
+                } else {
+                    return (false, Int(answer.categoryId!)!, "Comment is mandatory when Other is selected.")
+                }
+            }
+        }
+        
+        return (true, nil, nil)
+    }
+    
+    private func validateTextBox(answer: AnswerInfo) -> (Bool, Int?, String?) {
+        
+        if let textBox = answer.textBox {
+            if textBox.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
+                return (false, Int(answer.categoryId!)!, "User input cannot be empty for this question.")
+            }
+        } else {
+            return (false, Int(answer.categoryId!)!, "User input cannot be empty for this question.")
+        }
+        
+        return (true, nil, nil)
+    }
+    
+    private func prepareRequestBody() -> [String: Any] {
+        var dict = [String: Any]()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM-dd-YYYY"
+        dict["ClubKey"] = visitInfo!.clubKey!
+        dict["VisitDate"] = dateFormatter.string(from:(visitInfo!.visitDate!))
+        var ans = [Any]()
+        visitInfo!.answers!.enumerateObjects { elem, idx, _ in
+            let a = elem as! AnswerInfo
+            var temp = [String: Any]()
+            temp["QuestionType"] = a.questionType!
+            temp["QuestionKey"] = a.questionKey!
+            temp["Comment"] = a.comment ?? ""
+            temp["CategoryId"] = a.categoryId!
+            var tempAns = [String]()
+
+            for idx in a.ans! {
+                let ddi = a.items?.object(at: idx) as! DropDownItem
+                tempAns.append(ddi.labelKey!)
+            }
+            temp["Answers"] = tempAns
+            ans.append(temp)
+        }
+        dict["Questions"] = ans
+        print("request body: \(dict)")
+        
+        return dict
+    }
+    
+    
     
 }
 

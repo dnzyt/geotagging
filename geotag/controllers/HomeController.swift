@@ -378,8 +378,8 @@ extension HomeController: ClubSearchControllerDelegate {
         let context = appDelegate.persistentContainer.viewContext
         guard let club = clubs.first else { return }
         if club.geocode == nil {
-            if let addr = club.address, let city = club.city, let province = club.province, let zip = club.zip {
-                let address = "\(addr), \(city), \(province), \(zip)"
+            if let addr = club.address, let city = club.city, let province = club.province, let zip = club.zip, let countryCode = club.countryCode {
+                let address = "\(addr), \(city), \(province), \(zip), \(countryCode)"
                 geocoder.geocodeAddressString(address) { [weak self] (placemarks, error) in
                     if let placemark = placemarks?.first, let lat = placemark.location?.coordinate.latitude, let long = placemark.location?.coordinate.longitude {
                         let geocode = "\(lat),\(long)"

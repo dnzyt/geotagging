@@ -24,6 +24,7 @@ extension AnswerInfo {
     @NSManaged public var needComment: String?
     @NSManaged public var questionKey: String?
     @NSManaged public var questionType: String?
+    @NSManaged public var textBox: String?
     @NSManaged public var items: NSOrderedSet?
     @NSManaged public var visitInfo: VisitInfo?
 

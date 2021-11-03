@@ -31,6 +31,8 @@ extension ClubInfo {
     @NSManaged public var province: String?
     @NSManaged public var uplineName: String?
     @NSManaged public var zip: String?
+    @NSManaged public var countryCode: String?
+    @NSManaged public var hasBeenVisited: Bool
 
 }
 
