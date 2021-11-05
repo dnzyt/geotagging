@@ -78,6 +78,8 @@ class HomeController: UIViewController {
         } catch {
             print("load clubs from local failed")
         }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshTableAndMap), name: NSNotification.Name("REFRESH"), object: nil)
 
 //        Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { timer in
 //            let reachability = try! Reachability()
@@ -91,9 +93,35 @@ class HomeController: UIViewController {
         
     }
     
+    @objc func refreshTableAndMap(notification: Notification) {
+        DispatchQueue.main.async { [unowned self] in
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+            let context = appDelegate.persistentContainer.viewContext
+            
+       
+            let userInfo = notification.userInfo as! [String: [String]]
+            let cks = userInfo["CLUB_KEYS"]!
+            for ck in cks {
+                for c in self.clubs {
+                    if c.clubKey! == ck {
+                        c.hasBeenVisited = true
+                    }
+                }
+            }
+            try? context.save()
+            print("club updated from offline.")
+            print("refresh notificaiton")
+            clubTable.reloadData()
+            refreshMap()
+        }
+        
+        
+        
+        
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -271,10 +299,6 @@ extension HomeController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: self.clubCellId, for: indexPath) as! ClubCell
         cell.club = clubs[indexPath.row]
         
-        
-        if (indexPath.row % 2 == 0) {
-            cell.mapPin.tintColor = .lightGray
-        }
         return cell
     }
     

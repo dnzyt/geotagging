@@ -67,7 +67,7 @@ class VisitPrepareController: UIViewController {
         view.backgroundColor = .white
 
         locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         locationManager.requestWhenInUseAuthorization()
         
         table.register(VisitPrepareCell.self, forCellReuseIdentifier: VisitPrepareController.cellId)
@@ -345,7 +345,15 @@ class VisitPrepareController: UIViewController {
             }.resume()
         } else {
             print("internet connection not available")
-            self.dismissJGPIndicator(mainText: "Cached Offline!", success: true)
+            DispatchQueue.main.async {
+                guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+                let context = appDelegate.persistentContainer.viewContext
+                let offlineGeocode = OfflineGeocode(context: context)
+                offlineGeocode.clubKey = club.clubKey
+                offlineGeocode.geocode = geocode
+                try? context.save()
+            }
+            self.dismissJGPIndicator(mainText: "Geocode cached Offline!", success: true)
         }
         
     }
@@ -353,8 +361,7 @@ class VisitPrepareController: UIViewController {
 }
 
 extension VisitPrepareController: CLLocationManagerDelegate {
-    
-    
+
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let newLocation = locations.last!
         if newLocation.timestamp.timeIntervalSinceNow < -5 {

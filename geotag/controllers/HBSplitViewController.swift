@@ -8,6 +8,7 @@
 import UIKit
 import SwiftyJSON
 import JGProgressHUD
+import Reachability
 
 
 class HBSplitViewController: UISplitViewController {
@@ -105,6 +106,8 @@ class HBSplitViewController: UISplitViewController {
     }
     
     @objc private func submit() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        let context = appDelegate.persistentContainer.viewContext
         visitInfo!.answers!.enumerateObjects { elem, idx, stop in
             let a = elem as! AnswerInfo
             guard let qType = a.questionType else {
@@ -134,6 +137,14 @@ class HBSplitViewController: UISplitViewController {
                 stop.pointee = true
                 return
             }
+        }
+        visitInfo?.finished = true
+        try? context.save()
+        
+        let reachability = try! Reachability()
+        if reachability.connection == .unavailable {
+            showOfflineAlert()
+            return
         }
         
         self.hud.textLabel.text = "Submitting visit..."
@@ -174,6 +185,18 @@ class HBSplitViewController: UISplitViewController {
             
         }.resume()
         
+    }
+    
+    private func showOfflineAlert() {
+        DispatchQueue.main.async {
+            self.hud.textLabel.text = "Visit cached locally"
+            self.hud.detailTextLabel.text = "The app is in offline mode currently."
+            self.hud.indicatorView = JGProgressHUDSuccessIndicatorView()
+            self.hud.show(in: self.view)
+            self.hud.dismiss(afterDelay: 3, animated: true) { [weak self] in
+                self?.backToHome()
+            }
+        }
     }
     
     private func showFailureAlert() {
@@ -255,6 +278,10 @@ class HBSplitViewController: UISplitViewController {
             temp["Comment"] = a.comment ?? ""
             temp["CategoryId"] = a.categoryId!
             var tempAns = [String]()
+            if a.questionType == "USER_ENTRY" {
+                a.ans?.append(0)
+                temp["OtherTextBox"] = a.textBox!
+            }
 
             for idx in a.ans! {
                 let ddi = a.items?.object(at: idx) as! DropDownItem

@@ -21,6 +21,13 @@ class QuestionController: UIViewController {
                 table.allowsMultipleSelection = false
             }
             questionLbl.text = answer?.label
+            if let commentContent = answer?.comment {
+                commentView.text = commentContent
+            }
+            
+            if let userEntry = answer?.textBox {
+                userEntryTF.text = userEntry
+            }
         }
     }
     var completionHandler: (() -> ())?
@@ -41,6 +48,15 @@ class QuestionController: UIViewController {
         
 
         return t
+    }()
+    
+    let userEntryTF: UITextField = {
+        let tf = UITextField()
+        tf.placeholder = "User entry here..."
+        tf.translatesAutoresizingMaskIntoConstraints = false
+        tf.textColor = .systemGray
+        tf.borderStyle = .none
+        return tf
     }()
     
     let questionLbl: UILabel = {
@@ -97,10 +113,19 @@ class QuestionController: UIViewController {
         
         table.delegate = self
         table.dataSource = self
-        
+        userEntryTF.delegate = self
         commentView.delegate = self
         
         setupUI()
+        if answer?.questionType == "USER_ENTRY" {
+            userEntryTF.isHidden = false
+            table.isHidden = true
+            commentView.isHidden = true
+        } else {
+            userEntryTF.isHidden = true
+            table.isHidden = false
+            commentView.isHidden = false
+        }
         
         okBtn.addTarget(self, action: #selector(okAction), for: .touchUpInside)
 
@@ -118,6 +143,8 @@ class QuestionController: UIViewController {
             answer?.comment = commentView.text
         }
         
+        answer?.textBox = userEntryTF.text
+        
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let context = appDelegate.persistentContainer.viewContext
         
@@ -131,6 +158,7 @@ class QuestionController: UIViewController {
     private func setupUI() {
         view.addSubview(questionLbl)
         view.addSubview(table)
+        view.addSubview(userEntryTF)
         view.addSubview(commentView)
         view.addSubview(okBtn)
         
@@ -138,6 +166,9 @@ class QuestionController: UIViewController {
             questionLbl.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
             questionLbl.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 30),
             questionLbl.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -30),
+            userEntryTF.topAnchor.constraint(equalTo: questionLbl.bottomAnchor, constant: 30),
+            userEntryTF.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 50),
+            userEntryTF.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -50),
             table.topAnchor.constraint(equalTo: questionLbl.bottomAnchor, constant: 30),
             table.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 50),
             table.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -50),
@@ -172,9 +203,7 @@ class QuestionController: UIViewController {
             }
         }
         
-        if let commentContent = answer?.comment {
-            commentView.text = commentContent
-        }
+
     }
 
 }
@@ -202,6 +231,10 @@ extension QuestionController: UITableViewDataSource {
 
 extension QuestionController: UITableViewDelegate {
 
+}
+
+extension QuestionController: UITextFieldDelegate {
+    
 }
 
 extension QuestionController: UITextViewDelegate {

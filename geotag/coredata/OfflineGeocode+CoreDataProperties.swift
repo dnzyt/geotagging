@@ -18,6 +18,7 @@ extension OfflineGeocode {
 
     @NSManaged public var clubKey: String?
     @NSManaged public var geocode: String?
+    @NSManaged public var isDone: Bool
 
 }
 

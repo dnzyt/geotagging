@@ -45,6 +45,7 @@
     <entity name="OfflineGeocode" representedClassName="OfflineGeocode" syncable="YES">
         <attribute name="clubKey" optional="YES" attributeType="String"/>
         <attribute name="geocode" optional="YES" attributeType="String"/>
+        <attribute name="isDone" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
     </entity>
     <entity name="QuestionInfo" representedClassName=".QuestionInfo" syncable="YES">
         <attribute name="categoryId" optional="YES" attributeType="String"/>
@@ -68,7 +69,7 @@
         <element name="ClubInfo" positionX="-15.036865234375" positionY="-507.7122802734374" width="128" height="284"/>
         <element name="DropDownItem" positionX="227.9443359375" positionY="-282.2090454101562" width="128" height="74"/>
         <element name="LabelInfo" positionX="86.150634765625" positionY="82.04071044921875" width="131.949462890625" height="88"/>
-        <element name="OfflineGeocode" positionX="205.98046875" positionY="-464.2579345703125" width="128" height="59"/>
+        <element name="OfflineGeocode" positionX="205.98046875" positionY="-464.2579345703125" width="128" height="74"/>
         <element name="QuestionInfo" positionX="-507.5576171875" positionY="21.971923828125" width="196.4769287109375" height="149"/>
         <element name="VisitInfo" positionX="-474.527099609375" positionY="-281.3405151367188" width="148.694580078125" height="104"/>
     </elements>

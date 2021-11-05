@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Reachability
+
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -43,6 +45,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
         print("sceneDidBecomeActive")
+        let reachability = try! Reachability()
+        if reachability.connection != .unavailable {
+            OfflineManager.shared.startOfflineProcess()
+        } else {
+            print("no internet connection.")
+        }
     }
 
     func sceneWillResignActive(_ scene: UIScene) {

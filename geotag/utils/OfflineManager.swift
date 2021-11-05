@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftyJSON
 
 
 final class OfflineManager: NSObject {
@@ -30,20 +31,27 @@ final class OfflineManager: NSObject {
         appDelegate.persistentContainer.performBackgroundTask { context in
             let visitInfoFetchRequest = VisitInfo.fetchRequest()
             let predicate1 = NSPredicate(format: "finished == %@", NSNumber(value: true))
-            let predicate2 = NSPredicate(format: "submitted == %@", NSNumber(value: false))
+            let predicate2 = NSPredicate(format: "submitted == %@", NSNumber(value: true))
             let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate1, predicate2])
             visitInfoFetchRequest.predicate = predicate
+            
+            let offlineGeocodeRequest = OfflineGeocode.fetchRequest()
+            let pred = NSPredicate(format: "isDone == %@", NSNumber(value: false))
+            offlineGeocodeRequest.predicate = pred
+
+            
             do {
                 let visitInfos = try context.fetch(visitInfoFetchRequest) as [VisitInfo]
+                let offlines = try context.fetch(offlineGeocodeRequest) as [OfflineGeocode]
                 
-                if visitInfos.isEmpty {
+                if visitInfos.isEmpty && offlines.isEmpty {
                     print("no content for offline uploading")
                     self.isProcessing = false
                     return
                 }
                 
                 // offline uploading starts
-                bgTask = UIApplication.shared.beginBackgroundTask(withName: "") {
+                bgTask = UIApplication.shared.beginBackgroundTask(withName: "bgTask") {
                     print("running in background")
                     self.isProcessing = false
                     if bgTask != .invalid {
@@ -54,10 +62,23 @@ final class OfflineManager: NSObject {
                 }
                 
                 let group = DispatchGroup()
+                var cks = [String]()
                 
                 for visit in visitInfos {
+                    cks.append(visit.clubKey!)
+                    let current = visit
                     group.enter()
-                    self.uploadOffline(visit: visit) {
+                    self.uploadOffline(visit: current) {
+                        current.submitted = true
+                        group.leave()
+                    }
+                }
+                
+                for offline in offlines {
+                    let current = offline
+                    group.enter()
+                    self.uploadOffline(geocode: current) {
+                        current.isDone = true
                         group.leave()
                     }
                 }
@@ -66,6 +87,12 @@ final class OfflineManager: NSObject {
                 group.notify(queue: .main) {
                     self.isProcessing = false
                     // dispatch notification
+                    do {
+                        try context.save()
+                        NotificationCenter.default.post(name: NSNotification.Name("REFRESH"), object: nil, userInfo: ["CLUB_KEYS": cks])
+                    } catch {
+                        print("save offline changes failed.")
+                    }
                     UIApplication.shared.endBackgroundTask(bgTask)
                 }
                 
@@ -80,12 +107,24 @@ final class OfflineManager: NSObject {
         
     }
     
-    func uploadOffline(visit: VisitInfo, completion: @escaping () -> ()) {
-        var dict = [String: String]()
-        dict["ClubKey"] = "966038"
-        dict["DistributorId"] = ""
+    private func uploadOffline(visit: VisitInfo, completion: @escaping () -> ()) {
+        upload(dict: prepareRequestBody(visit: visit), completion: completion)
+    }
+    
+    private func uploadOffline(geocode: OfflineGeocode, completion: @escaping () -> ()) {
+        if let clubKey = geocode.clubKey, let g = geocode.geocode {
+            var dict = [String: String]()
+            dict["ClubKey"] = clubKey
+            dict["GeoCode"] = g
+            upload(dict: dict, completion: completion)
+        } else {
+            completion()
+        }
         
-        guard let url = URL(string: Constatns.url + Constatns.getClubs) else { return }
+    }
+    
+    private func upload(dict: [String: Any], completion: @escaping () -> ()) {
+        guard let url = URL(string: Constatns.url + Constatns.createVisit) else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -95,8 +134,59 @@ final class OfflineManager: NSObject {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             print("offlien data: \(String(describing: data))")
+            if error != nil {
+                // show error message and then go back
+                print("offline upload error: \(String(describing: error))")
+                completion()
+                return
+            }
+            if let data = data {
+                guard let json = try? JSON(data: data) else {
+                    print("parsing offlien response failed")
+                    completion()
+                    return
+                }
+                print("offline submit visit response json: \(json)")
+                if let errorCode = json["ErrorCode"].string, errorCode == "0" {
+                    print("offline visit number: \(json["VisitNumber"].stringValue)")
+                } else {
+                    print("offline submit visit error code is not 0")
+                }
+            }
             completion()
+        }.resume()
+    }
+    
+    private func prepareRequestBody(visit: VisitInfo) -> [String: Any] {
+        var dict = [String: Any]()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM-dd-YYYY"
+        dict["ClubKey"] = visit.clubKey!
+        dict["VisitDate"] = dateFormatter.string(from:(visit.visitDate!))
+        var ans = [Any]()
+        visit.answers!.enumerateObjects { elem, idx, _ in
+            let a = elem as! AnswerInfo
+            var temp = [String: Any]()
+            temp["QuestionType"] = a.questionType!
+            temp["QuestionKey"] = a.questionKey!
+            temp["Comment"] = a.comment ?? ""
+            temp["CategoryId"] = a.categoryId!
+            var tempAns = [String]()
+            if a.questionType == "USER_ENTRY" {
+                temp["OtherTextBox"] = a.textBox ?? "$122"
+            }
+
+            for idx in a.ans! {
+                let ddi = a.items?.object(at: idx) as! DropDownItem
+                tempAns.append(ddi.labelKey!)
+            }
+            temp["Answers"] = tempAns
+            ans.append(temp)
         }
+        dict["Questions"] = ans
+        print("request body: \(dict)")
+        
+        return dict
     }
     
 }
