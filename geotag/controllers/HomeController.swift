@@ -79,7 +79,7 @@ class HomeController: UIViewController {
             print("load clubs from local failed")
         }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(refreshTableAndMap), name: NSNotification.Name("REFRESH"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshTableAndMap), name: NSNotification.Name(Constatns.offlineDoneNotification), object: nil)
 
 //        Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { timer in
 //            let reachability = try! Reachability()
@@ -224,6 +224,12 @@ class HomeController: UIViewController {
         ])
         
         NSLayoutConstraint.activate(sharedConstraints)
+        
+        if view.traitCollection.horizontalSizeClass == .compact && view.traitCollection.verticalSizeClass == .regular {
+            NSLayoutConstraint.activate(compactConstraints)
+        } else {
+            NSLayoutConstraint.activate(regularConstraints)
+        }
    
         
     }

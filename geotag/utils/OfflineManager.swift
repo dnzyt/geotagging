@@ -31,7 +31,7 @@ final class OfflineManager: NSObject {
         appDelegate.persistentContainer.performBackgroundTask { context in
             let visitInfoFetchRequest = VisitInfo.fetchRequest()
             let predicate1 = NSPredicate(format: "finished == %@", NSNumber(value: true))
-            let predicate2 = NSPredicate(format: "submitted == %@", NSNumber(value: true))
+            let predicate2 = NSPredicate(format: "submitted == %@", NSNumber(value: false))
             let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate1, predicate2])
             visitInfoFetchRequest.predicate = predicate
             
@@ -89,7 +89,7 @@ final class OfflineManager: NSObject {
                     // dispatch notification
                     do {
                         try context.save()
-                        NotificationCenter.default.post(name: NSNotification.Name("REFRESH"), object: nil, userInfo: ["CLUB_KEYS": cks])
+                        NotificationCenter.default.post(name: NSNotification.Name(Constatns.offlineDoneNotification), object: nil, userInfo: ["CLUB_KEYS": cks])
                     } catch {
                         print("save offline changes failed.")
                     }

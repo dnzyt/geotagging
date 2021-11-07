@@ -15,6 +15,14 @@ class LoginController: UIViewController {
     var loginFormYContraint: NSLayoutConstraint?
     let hud = JGProgressHUD()
     
+    let versionLbl: UILabel = {
+        let vl = UILabel()
+        vl.translatesAutoresizingMaskIntoConstraints = false
+        vl.text = "v0.1.0"
+        vl.textColor = .white
+        return vl
+    }()
+    
     let logoView: UIImageView = {
         let l = UIImageView()
         l.image = UIImage(named: "horizon_logo")
@@ -245,6 +253,7 @@ class LoginController: UIViewController {
     }
     
     fileprivate func setupInputsView() {
+        view.addSubview(versionLbl)
         view.addSubview(logoView)
         inputsContainer.addArrangedSubview(usernameTF)
         inputsContainer.addArrangedSubview(spacer)
@@ -255,6 +264,8 @@ class LoginController: UIViewController {
         loginFormYContraint = inputsContainer.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         
         NSLayoutConstraint.activate([
+            versionLbl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            versionLbl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             logoView.widthAnchor.constraint(equalToConstant: 300),
             logoView.heightAnchor.constraint(equalToConstant: 120),
             logoView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
