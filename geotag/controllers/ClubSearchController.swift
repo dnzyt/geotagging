@@ -159,7 +159,12 @@ class ClubSearchController: UIViewController {
                     
                     let json = try! JSON(data: data)
                     print("json: \(json)")
-                    if let errorCode = json["ErrorCode"].string, errorCode == "0", let errorMessage = json["ErrorMessage"].string {
+                    let errorCode = json["ErrorCode"].stringValue
+                    let errorMessage = json["ErrorMessage"].stringValue
+                    if errorCode == "NCERR_01" || errorCode == "NCERR_02" || errorCode == "NCERR_03" {
+                        self.delegate?.clubsSearched([], withResult: false, and: errorMessage)
+                        return
+                    } else if errorCode == "0" {
                         var res = [ClubInfo]()
                         let newJson = json["GetClubDetails"].arrayValue
                         for subJson in newJson {
@@ -207,7 +212,8 @@ class ClubSearchController: UIViewController {
 
                         }
                     } else {
-                        self.delegate?.clubsSearched([], withResult: false, and: "Internal Server Error")
+                        self.delegate?.clubsSearched([], withResult: false, and: "Internal Server Error.")
+                        return
                     }
                 }
             }

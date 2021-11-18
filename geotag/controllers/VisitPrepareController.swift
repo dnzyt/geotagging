@@ -236,8 +236,6 @@ class VisitPrepareController: UIViewController {
             return
         }
         
-
-        
         let authStatus = locationManager.authorizationStatus
         if authStatus == .notDetermined {
             return
@@ -251,6 +249,13 @@ class VisitPrepareController: UIViewController {
             self.hud.textLabel.text = "Searching geocode..."
             self.hud.indicatorView = JGProgressHUDIndeterminateIndicatorView()
             self.hud.show(in: self.view.window!)
+            self.hud.tapOutsideBlock = { [unowned self] hud in
+                locationManager.stopUpdatingLocation()
+                updatingLocation = false
+                lastLocationError = nil
+                hud.dismiss(animated: true)
+                print("cancel update location")
+            }
         }
         
         locationManager.startUpdatingLocation()
@@ -283,6 +288,7 @@ class VisitPrepareController: UIViewController {
         if updatingLocation {
             locationManager.stopUpdatingLocation()
             updatingLocation = false
+            lastLocationError = nil
             print("stop location manager")
         }
     }

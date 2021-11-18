@@ -52,7 +52,7 @@ class QuestionController: UIViewController {
     
     let userEntryTF: UITextField = {
         let tf = UITextField()
-        tf.placeholder = "User entry here..."
+        tf.placeholder = "IDR:"
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.textColor = .systemGray
         tf.borderStyle = .none

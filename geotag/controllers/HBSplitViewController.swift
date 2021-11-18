@@ -108,13 +108,13 @@ class HBSplitViewController: UISplitViewController {
     @objc private func submit() {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let context = appDelegate.persistentContainer.viewContext
+        var result = true
         visitInfo!.answers!.enumerateObjects { elem, idx, stop in
             let a = elem as! AnswerInfo
             guard let qType = a.questionType else {
                 stop.pointee = true
                 return
             }
-            var result = true
             var category: Int? = -1
             var errorMessage: String? = ""
             if qType == "MULTI_SELECT" {
@@ -137,6 +137,9 @@ class HBSplitViewController: UISplitViewController {
                 stop.pointee = true
                 return
             }
+        }
+        if !result {
+            return
         }
         visitInfo?.finished = true
         try? context.save()
