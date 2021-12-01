@@ -55,6 +55,7 @@ class QuestionController: UIViewController {
         tf.placeholder = "IDR:"
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.textColor = .systemGray
+        tf.keyboardType = .numberPad
         tf.borderStyle = .none
         return tf
     }()

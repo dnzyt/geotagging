@@ -18,6 +18,10 @@ class BusinessCell: UITableViewCell {
                 ans.append(item.labelValue!)
                 ans.append("\n")
             }
+            if let tb = answer?.textBox {
+                ans.append(tb)
+            }
+            
             ansLbl.text = ans
             commentLbl.text = answer?.comment
         }

@@ -139,7 +139,7 @@ class ClubSearchController: UIViewController {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let _ = error {
-                self.delegate?.clubsSearched([], withResult: false, and: "Internal Server Error")
+                self.delegate?.clubsSearched([], withResult: false, and: "We're sorry, but something went wrong. We're working on it and will get it fixed. Please try again later.")
                 return
             }
             if let data = data {
@@ -212,7 +212,7 @@ class ClubSearchController: UIViewController {
 
                         }
                     } else {
-                        self.delegate?.clubsSearched([], withResult: false, and: "Internal Server Error.")
+                        self.delegate?.clubsSearched([], withResult: false, and: "We're sorry, but something went wrong. We're working on it and will get it fixed. Please try again later.")
                         return
                     }
                 }
