@@ -52,10 +52,9 @@ class QuestionController: UIViewController {
     
     let userEntryTF: UITextField = {
         let tf = UITextField()
-        tf.placeholder = "IDR:"
+        tf.placeholder = "IDR: (numbers only)"
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.textColor = .systemGray
-        tf.keyboardType = .numberPad
         tf.borderStyle = .none
         return tf
     }()
@@ -235,7 +234,57 @@ extension QuestionController: UITableViewDelegate {
 }
 
 extension QuestionController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let oldString = textField.text else { return false }
+        let temp = oldString as NSString
+        let newString = temp.replacingCharacters(in: range, with: string)
+        
+        let processedNewString = removeCommaFrom(newString)
+        print("processed new string: \(processedNewString)")
+        
+        let decimalPattern = "^[0-9]*((\\.)[0-9]{0,2})?$"
+        let decimalRegex = try! NSRegularExpression(pattern: decimalPattern, options: .caseInsensitive)
+        let numOfMatches = decimalRegex.numberOfMatches(in: processedNewString, options: .anchored, range: NSRange(location: 0, length: processedNewString.count))
+        if processedNewString.last == "." {
+            return true
+        }
+        if numOfMatches != 0 {
+            textField.text = addCommaTo(processedNewString).replacingOccurrences(of: "^0+", with: "", options: .regularExpression)
+        }
+        
+        return false
+//        let allowedCharacters = CharacterSet.decimalDigits
+//        let characterSet = CharacterSet(charactersIn: string)
+//
+//        return allowedCharacters.isSuperset(of: characterSet)
+    }
     
+    private func removeCommaFrom(_ string: String) -> String {
+        return string.replacingOccurrences(of: ",", with: "")
+    }
+    
+    private func addCommaTo(_ string: String) -> String {
+        let components = string.components(separatedBy: CharacterSet(charactersIn: "."))
+        let intPart = components[0]
+        if intPart.count == 0 {
+            return ""
+        }
+        let reversed = intPart.reversed()
+        var res = ""
+        for (index, elem) in reversed.enumerated() {
+            if index != 0 && index % 3 == 0 {
+                res.append(",")
+            }
+            res.append(elem)
+
+        }
+        var intString = String(res.reversed())
+        if components.count > 1 {
+            intString.append(".")
+            intString.append(components[1])
+        }
+        return intString
+    }
 }
 
 extension QuestionController: UITextViewDelegate {
