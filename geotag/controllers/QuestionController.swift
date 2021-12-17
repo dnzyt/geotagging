@@ -23,6 +23,7 @@ class QuestionController: UIViewController {
             questionLbl.text = answer?.label
             if let commentContent = answer?.comment {
                 commentView.text = commentContent
+                commentView.textColor = .black
             }
             
             if let userEntry = answer?.textBox {

@@ -109,6 +109,7 @@ class HBSplitViewController: UISplitViewController {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let context = appDelegate.persistentContainer.viewContext
         var result = true
+
         visitInfo!.answers!.enumerateObjects { elem, idx, stop in
             let a = elem as! AnswerInfo
             guard let qType = a.questionType else {
@@ -234,7 +235,7 @@ class HBSplitViewController: UISplitViewController {
     
     private func validateDropdown(answer: AnswerInfo) -> (Bool, Int?, String?) {
         if answer.ans!.count == 0 {
-            return (false, Int(answer.categoryId!)!, "Select one option from the menu at lease.")
+            return (false, Int(answer.categoryId!)! - 1, "Select one option from the menu at least.")
         }
         
         for idx in answer.ans! {
@@ -242,10 +243,10 @@ class HBSplitViewController: UISplitViewController {
             if ddi.labelKey! == "OTHERS" {
                 if let comment = answer.comment {
                     if comment.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
-                        return (false, Int(answer.categoryId!)!, "Comment is mandatory when Other is selected.")
+                        return (false, Int(answer.categoryId!)! - 1, "Comment is mandatory when Other is selected.")
                     }
                 } else {
-                    return (false, Int(answer.categoryId!)!, "Comment is mandatory when Other is selected.")
+                    return (false, Int(answer.categoryId!)! - 1, "Comment is mandatory when Other is selected.")
                 }
             }
         }

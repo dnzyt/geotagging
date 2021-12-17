@@ -47,6 +47,9 @@
         <attribute name="geocode" optional="YES" attributeType="String"/>
         <attribute name="isDone" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
     </entity>
+    <entity name="PrevVisitInfo" representedClassName="PrevVisitInfo" syncable="YES" codeGenerationType="class">
+        <attribute name="visitNumber" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="QuestionInfo" representedClassName=".QuestionInfo" syncable="YES">
         <attribute name="categoryId" optional="YES" attributeType="String"/>
         <attribute name="countryCode" optional="YES" attributeType="String"/>
@@ -65,12 +68,13 @@
         <relationship name="answers" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AnswerInfo" inverseName="visitInfo" inverseEntity="AnswerInfo"/>
     </entity>
     <elements>
-        <element name="AnswerInfo" positionX="-103.15283203125" positionY="-192.7849731445312" width="128" height="194"/>
+        <element name="AnswerInfo" positionX="-94.406982421875" positionY="-189.0731811523437" width="128" height="194"/>
         <element name="ClubInfo" positionX="-15.036865234375" positionY="-507.7122802734374" width="128" height="284"/>
-        <element name="DropDownItem" positionX="227.9443359375" positionY="-282.2090454101562" width="128" height="74"/>
+        <element name="DropDownItem" positionX="120.536376953125" positionY="-120.4271850585937" width="128" height="74"/>
         <element name="LabelInfo" positionX="86.150634765625" positionY="82.04071044921875" width="131.949462890625" height="88"/>
         <element name="OfflineGeocode" positionX="205.98046875" positionY="-464.2579345703125" width="128" height="74"/>
         <element name="QuestionInfo" positionX="-507.5576171875" positionY="21.971923828125" width="196.4769287109375" height="149"/>
-        <element name="VisitInfo" positionX="-474.527099609375" positionY="-281.3405151367188" width="148.694580078125" height="104"/>
+        <element name="VisitInfo" positionX="-447.170654296875" positionY="-285.5067749023438" width="148.694580078125" height="104"/>
+        <element name="PrevVisitInfo" positionX="-283.6904296875" positionY="-372.7781372070312" width="128" height="44"/>
     </elements>
 </model>

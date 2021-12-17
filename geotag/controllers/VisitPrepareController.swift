@@ -235,7 +235,6 @@ class VisitPrepareController: UIViewController {
         if updatingLocation {
             return
         }
-        
         let authStatus = locationManager.authorizationStatus
         if authStatus == .notDetermined {
             return
@@ -245,22 +244,31 @@ class VisitPrepareController: UIViewController {
             return
         }
         
-        DispatchQueue.main.async {
-            self.hud.textLabel.text = "Searching geocode..."
-            self.hud.indicatorView = JGProgressHUDIndeterminateIndicatorView()
-            self.hud.show(in: self.view.window!)
-            self.hud.tapOutsideBlock = { [unowned self] hud in
-                locationManager.stopUpdatingLocation()
-                updatingLocation = false
-                lastLocationError = nil
-                hud.dismiss(animated: true)
-                print("cancel update location")
+        let alert = UIAlertController(title: "Update geocode", message: "Are you sure to update the geocode of this club?", preferredStyle: .alert)
+        
+        let okAction = UIAlertAction(title: "Yes", style: .default) { [unowned self] _ in
+            updatingLocation = true
+            lastLocationError = nil
+            locationManager.startUpdatingLocation()
+            
+            DispatchQueue.main.async {
+                self.hud.textLabel.text = "Searching geocode..."
+                self.hud.indicatorView = JGProgressHUDIndeterminateIndicatorView()
+                self.hud.show(in: self.view.window!)
+                self.hud.tapOutsideBlock = { [unowned self] hud in
+                    locationManager.stopUpdatingLocation()
+                    updatingLocation = false
+                    lastLocationError = nil
+                    hud.dismiss(animated: true)
+                    print("cancel update location")
+                }
             }
         }
         
-        locationManager.startUpdatingLocation()
-        updatingLocation = true
-        lastLocationError = nil
+        let cancelAction = UIAlertAction(title: "No", style: .cancel, handler: nil)
+        alert.addAction(okAction)
+        alert.addAction(cancelAction)
+        present(alert, animated: true, completion: nil)
     }
     
     private func showLocationServiceDeniedAlert() {
