@@ -84,16 +84,24 @@ final class OfflineManager: NSObject {
                 }
                 
                 
+                
                 group.notify(queue: .main) {
                     self.isProcessing = false
-                    // dispatch notification
-                    do {
-                        try context.save()
-                        NotificationCenter.default.post(name: NSNotification.Name(Constatns.offlineDoneNotification), object: nil, userInfo: ["CLUB_KEYS": cks])
-                    } catch {
-                        print("save offline changes failed.")
+                    context.perform {
+                        do {
+                            if context.hasChanges {
+                                try context.save()
+                            } else {
+                                print("no changes from offline to submit")
+                            }
+                        } catch {
+                            print("save offline changes failed.")
+                        }
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name: NSNotification.Name(Constatns.offlineDoneNotification), object: nil, userInfo: ["CLUB_KEYS": cks])
+                        }
+                        UIApplication.shared.endBackgroundTask(bgTask)
                     }
-                    UIApplication.shared.endBackgroundTask(bgTask)
                 }
                 
             } catch {
