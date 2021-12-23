@@ -386,7 +386,7 @@ extension HomeController: MKMapViewDelegate {
 extension HomeController: ClubSearchControllerDelegate {
     func clubsSearched(_ cbs: [ClubInfo], withResult res: Bool, and message: String?) {
         if res {
-            clubs.append(contentsOf: cbs)
+            clubs = cbs + clubs
             geocodingInBatch(clubs: clubs)
             self.clubTable.reloadData()
             self.refreshMap()
@@ -444,6 +444,7 @@ extension HomeController: VisitPrepareControllerDelegate {
                 guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
                 let context = appDelegate.persistentContainer.viewContext
                 club.geocode = geocode
+                club.geoUpdated = true
                 try? context.save()
                 self.clubTable.reloadData()
                 self.refreshMap()

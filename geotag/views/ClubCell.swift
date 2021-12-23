@@ -15,10 +15,15 @@ class ClubCell: UITableViewCell {
             addressContentbl.text = club!.address
             clubNameContentsLbl.text = club!.clubName
             if club!.hasBeenVisited {
-                mapPin.image = UIImage(systemName: "checkmark.seal.fill")
+                visitedIndicator.image = UIImage(systemName: "checkmark.seal.fill")
+                visitedIndicator.tintColor = .systemBlue
+            } else {
+                visitedIndicator.image = UIImage(systemName: "square.3.stack.3d.top.filled")
+                visitedIndicator.tintColor = .systemGray
+            }
+            if club!.geoUpdated {
                 mapPin.tintColor = .systemBlue
             } else {
-                mapPin.image = UIImage(systemName: "square.3.stack.3d.top.filled")
                 mapPin.tintColor = .systemGray
             }
         }
@@ -170,10 +175,19 @@ class ClubCell: UITableViewCell {
         return s
     }()
     
-    let mapPin: UIImageView = {
+    let visitedIndicator: UIImageView = {
         let mp = UIImageView()
         mp.image = UIImage(systemName: "checkmark.seal.fill")
         mp.tintColor = .systemBlue
+        mp.translatesAutoresizingMaskIntoConstraints = false
+        
+        return mp
+    }()
+    
+    let mapPin: UIImageView = {
+        let mp = UIImageView()
+        mp.image = UIImage(systemName: "mappin.and.ellipse")
+        mp.tintColor = .systemGray
         mp.translatesAutoresizingMaskIntoConstraints = false
         
         return mp
@@ -215,6 +229,7 @@ class ClubCell: UITableViewCell {
 
         container.addSubview(ckImg)
         container.addSubview(addressImg)
+        container.addSubview(visitedIndicator)
         container.addSubview(mapPin)
         
         contentView.addSubview(container)
@@ -241,8 +256,10 @@ class ClubCell: UITableViewCell {
             addressImg.heightAnchor.constraint(equalToConstant: 25),
             addressImg.centerYAnchor.constraint(equalTo: addressStackView.centerYAnchor),
             addressImg.rightAnchor.constraint(equalTo: addressStackView.leftAnchor, constant: -5),
-            mapPin.rightAnchor.constraint(equalTo: container.rightAnchor, constant: -10),
-            mapPin.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -10)
+            visitedIndicator.rightAnchor.constraint(equalTo: container.rightAnchor, constant: -10),
+            visitedIndicator.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -10),
+            mapPin.rightAnchor.constraint(equalTo: visitedIndicator.leftAnchor, constant: -10),
+            mapPin.centerYAnchor.constraint(equalTo: visitedIndicator.centerYAnchor, constant: 0)
         ])
     }
     

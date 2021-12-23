@@ -336,7 +336,7 @@ class VisitPrepareController: UIViewController {
             
             URLSession.shared.dataTask(with: request) { data, response, error in
                 if let _ = error {
-                    self.dismissJGPIndicator(mainText: "Geocode Updated!", success: false)
+                    self.dismissJGPIndicator(mainText: "Geocode updating failed", success: false)
                     return
                 }
                 
@@ -347,14 +347,14 @@ class VisitPrepareController: UIViewController {
                             self.dismissJGPIndicator(mainText: "Geocode Updated!", success: true)
                             self.delegate?.geoTaggingFininshed(with: geocode, club: club, success: true)
                         } else {
-                            self.dismissJGPIndicator(mainText: "Geocode Updated!", success: false)
+                            self.dismissJGPIndicator(mainText: "Geocode updating failed", success: false)
                         }
                         
                     } catch {
-                        self.dismissJGPIndicator(mainText: "Geocode Updated!", success: false)
+                        self.dismissJGPIndicator(mainText: "Geocode updating failed", success: false)
                     }
                 } else {
-                    self.dismissJGPIndicator(mainText: "Geocode Updated!", success: false)
+                    self.dismissJGPIndicator(mainText: "Geocode updating failed", success: false)
                 }
             }.resume()
         } else {
