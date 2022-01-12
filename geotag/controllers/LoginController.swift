@@ -18,7 +18,7 @@ class LoginController: UIViewController {
     let versionLbl: UILabel = {
         let vl = UILabel()
         vl.translatesAutoresizingMaskIntoConstraints = false
-        vl.text = "v0.4.1"
+        vl.text = "v0.4.2"
         vl.textColor = .white
         return vl
     }()
@@ -137,7 +137,8 @@ class LoginController: UIViewController {
     }
     
     private func downloadQuestions() {
-        guard let url = URL(string: Constatns.url + Constatns.getLabels) else { return }
+        print("service url: \(Constants.url + Constants.getLabels)")
+        guard let url = URL(string: Constants.url + Constants.getLabels) else { return }
         var dict = [String: String]()
         dict["CountryCode"] = "ID"
         var request = URLRequest(url: url)

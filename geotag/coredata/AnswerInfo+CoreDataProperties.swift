@@ -2,7 +2,7 @@
 //  AnswerInfo+CoreDataProperties.swift
 //  geotag
 //
-//  Created by Ningze Dai on 10/19/21.
+//  Created by Ningze Dai on 1/12/22.
 //
 //
 
@@ -27,6 +27,7 @@ extension AnswerInfo {
     @NSManaged public var textBox: String?
     @NSManaged public var items: NSOrderedSet?
     @NSManaged public var visitInfo: VisitInfo?
+    @NSManaged public var prevVisitInfo: PrevVisitInfo?
 
 }
 

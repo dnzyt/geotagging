@@ -79,7 +79,7 @@ class HomeController: UIViewController {
             print("load clubs from local failed")
         }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(refreshTableAndMap), name: NSNotification.Name(Constatns.offlineDoneNotification), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshTableAndMap), name: NSNotification.Name(Constants.offlineDoneNotification), object: nil)
 
 //        Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { timer in
 //            let reachability = try! Reachability()
@@ -101,13 +101,25 @@ class HomeController: UIViewController {
        
             let userInfo = notification.userInfo as! [String: [String]]
             let cks = userInfo["CLUB_KEYS"]!
+            let offlineCks = userInfo["OFFLINES_CLUB_KEYS"]!
             for ck in cks {
                 for c in self.clubs {
                     if c.clubKey! == ck {
                         c.hasBeenVisited = true
+                        break
                     }
                 }
             }
+            
+            for ck in offlineCks {
+                for c in self.clubs {
+                    if c.clubKey! == ck {
+                        c.geoUpdated = true
+                        break
+                    }
+                }
+            }
+            
             try? context.save()
             print("club updated from offline.")
             print("refresh notificaiton")

@@ -323,7 +323,7 @@ class VisitPrepareController: UIViewController {
         
         let reachability = try! Reachability()
         if reachability.connection != .unavailable {
-            guard let url = URL(string: Constatns.url + Constatns.updateGeoTrack) else { return }
+            guard let url = URL(string: Constants.url + Constants.updateGeoTrack) else { return }
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")

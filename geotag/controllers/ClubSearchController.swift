@@ -129,7 +129,7 @@ class ClubSearchController: UIViewController {
         
         
         
-        guard let url = URL(string: Constatns.url + Constatns.getClubs) else { return }
+        guard let url = URL(string: Constants.url + Constants.getClubs) else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

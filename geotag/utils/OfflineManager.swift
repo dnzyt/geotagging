@@ -74,8 +74,10 @@ final class OfflineManager: NSObject {
                     }
                 }
                 
+                var offlineCks = [String]()
                 for offline in offlines {
                     let current = offline
+                    offlineCks.append(offline.clubKey!)
                     group.enter()
                     self.uploadOffline(geocode: current) {
                         current.isDone = true
@@ -98,7 +100,7 @@ final class OfflineManager: NSObject {
                             print("save offline changes failed.")
                         }
                         DispatchQueue.main.async {
-                            NotificationCenter.default.post(name: NSNotification.Name(Constatns.offlineDoneNotification), object: nil, userInfo: ["CLUB_KEYS": cks])
+                            NotificationCenter.default.post(name: NSNotification.Name(Constants.offlineDoneNotification), object: nil, userInfo: ["CLUB_KEYS": cks, "OFFLINES_CLUB_KEYS": offlineCks])
                         }
                         UIApplication.shared.endBackgroundTask(bgTask)
                     }
@@ -116,23 +118,24 @@ final class OfflineManager: NSObject {
     }
     
     private func uploadOffline(visit: VisitInfo, completion: @escaping () -> ()) {
-        upload(dict: prepareRequestBody(visit: visit), completion: completion)
+        guard let url = URL(string: Constants.url + Constants.createVisit) else { return }
+        upload(dict: prepareRequestBody(visit: visit), url: url, completion: completion)
     }
     
     private func uploadOffline(geocode: OfflineGeocode, completion: @escaping () -> ()) {
+        guard let url = URL(string: Constants.url + Constants.updateGeoTrack) else { return }
         if let clubKey = geocode.clubKey, let g = geocode.geocode {
             var dict = [String: String]()
             dict["ClubKey"] = clubKey
             dict["GeoCode"] = g
-            upload(dict: dict, completion: completion)
+            upload(dict: dict, url: url, completion: completion)
         } else {
-            completion()
+            print("club key or geocode is not available for this offline geocode submission.")
         }
         
     }
     
-    private func upload(dict: [String: Any], completion: @escaping () -> ()) {
-        guard let url = URL(string: Constatns.url + Constatns.createVisit) else { return }
+    private func upload(dict: [String: Any], url: URL, completion: @escaping () -> ()) {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -143,25 +146,22 @@ final class OfflineManager: NSObject {
         URLSession.shared.dataTask(with: request) { data, response, error in
             print("offlien data: \(String(describing: data))")
             if error != nil {
-                // show error message and then go back
                 print("offline upload error: \(String(describing: error))")
-                completion()
                 return
             }
             if let data = data {
                 guard let json = try? JSON(data: data) else {
                     print("parsing offlien response failed")
-                    completion()
                     return
                 }
                 print("offline submit visit response json: \(json)")
                 if let errorCode = json["ErrorCode"].string, errorCode == "0" {
                     print("offline visit number: \(json["VisitNumber"].stringValue)")
+                    completion()
                 } else {
                     print("offline submit visit error code is not 0")
                 }
             }
-            completion()
         }.resume()
     }
     

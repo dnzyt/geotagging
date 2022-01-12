@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct Constatns {
+struct Constants {
     static let authentication = "AUTHENTICATION"
     #if DEV
-    static let url = "https://herbalife-oegdevws.hrbl.com/Distributor/NClubGeoTrackRS_prs"
+    static let url = "https://herbalife-oegdevws.hrbl.com/Distributor/NClubGeoTrackRS"
     #else
     static let url = "https://herbalife-econnect.hrbl.com/Distributor/NClubGeoTrackRS"
     #endif

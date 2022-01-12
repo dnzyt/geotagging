@@ -156,7 +156,7 @@ class HBSplitViewController: UISplitViewController {
         self.hud.indicatorView = JGProgressHUDIndeterminateIndicatorView()
         self.hud.show(in: self.view)
         
-        guard let url = URL(string: Constatns.url + Constatns.createVisit) else { return }
+        guard let url = URL(string: Constants.url + Constants.createVisit) else { return }
         let dict = prepareRequestBody()
         var request = URLRequest(url: url)
         request.httpMethod = "POST"

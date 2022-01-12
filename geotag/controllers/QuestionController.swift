@@ -235,8 +235,14 @@ extension QuestionController: UITableViewDelegate {
 }
 
 extension QuestionController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField .resignFirstResponder()
+        return false
+    }
+    
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let oldString = textField.text else { return false }
+
         let temp = oldString as NSString
         let newString = temp.replacingCharacters(in: range, with: string)
         
