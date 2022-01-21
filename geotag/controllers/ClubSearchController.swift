@@ -199,6 +199,25 @@ class ClubSearchController: UIViewController {
                             if let geocode = subJson["GeoCode"].string, geocode != "" {
                                 club.geocode = geocode
                             }
+                            let prevVisitInfo = PrevVisitInfo(context: context)
+                            club.prevVisitInfo = prevVisitInfo
+                            if let prevAnswers = subJson["GetPreviousVisitDetails"].array {
+                                for ans in prevAnswers {
+                                    let a = PrevAnswer(context: context)
+                                    a.labelKey = ans["LabelKey"].stringValue
+                                    a.labelValue = ans["Label"].stringValue
+                                    a.comments = ans["Comments"].stringValue
+                                    a.selections = ""
+                                    let dropdowns = ans["LookupValue"].stringValue
+                                    let selections = dropdowns.components(separatedBy: "|")
+                                    for s in selections {
+                                        a.selections = a.selections?.appending(s).appending("\n")
+                                    }
+                                    print("selections: \(a.selections ?? "no selection")")
+                                    a.usersEntry = ans["UsersEntry"].stringValue
+                                    a.prevVisitInfo = prevVisitInfo
+                                }
+                            }
                             res.append(club)
                         }
                         

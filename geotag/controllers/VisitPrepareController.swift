@@ -154,22 +154,21 @@ class VisitPrepareController: UIViewController {
         }
         
         
+        let split = HBSplitViewController(style: .doubleColumn)
+        split.preferredDisplayMode = .oneBesideSecondary
+        split.preferredSplitBehavior = .tile
+        split.preferredPrimaryColumnWidth = 240
+        split.displayModeButtonVisibility = .never
+        
+        split.visitInfo = visitInfo
+        split.businessController.answers = businessAnswers
+        split.trainingController.answers = trainingAnswers
+        split.trackingController.answers = trackingAnswers
+        split.feedbackController.answers = feedbackAnswers
+        split.prevController.prevVisitInfo = club?.prevVisitInfo
         
         guard let window = self.view.window else { return }
         UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve) {
-            let split = HBSplitViewController(style: .doubleColumn)
-            split.preferredDisplayMode = .oneBesideSecondary
-            split.preferredSplitBehavior = .tile
-            split.preferredPrimaryColumnWidth = 240
-            split.displayModeButtonVisibility = .never
-            
-            split.visitInfo = visitInfo
-            split.businessController.answers = businessAnswers
-            split.trainingController.answers = trainingAnswers
-            split.trackingController.answers = trackingAnswers
-            split.feedbackController.answers = feedbackAnswers
-            
-            
             window.rootViewController = split
         }
     }

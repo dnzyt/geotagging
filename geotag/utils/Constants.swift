@@ -11,6 +11,7 @@ struct Constants {
     static let authentication = "AUTHENTICATION"
     #if DEV
     static let url = "https://herbalife-oegdevws.hrbl.com/Distributor/NClubGeoTrackRS"
+//    static let url = "http://herbalife-mwdv1.hrbl.net:22000/Distributor/NClubGeoTrackRS"
     #else
     static let url = "https://herbalife-econnect.hrbl.com/Distributor/NClubGeoTrackRS"
     #endif

@@ -90,7 +90,7 @@ class MenuController: UIViewController {
 
 extension MenuController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        4
+        5
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -107,6 +107,9 @@ extension MenuController: UITableViewDataSource {
         } else if indexPath.row == 3 {
             cell.iconImageView.image = UIImage(systemName: "suitcase")
             cell.mainLbl.text = "Feedback"
+        } else if indexPath.row == 4 {
+            cell.iconImageView.image = UIImage(systemName: "clock")
+            cell.mainLbl.text = "Previous Visit"
         }
         
         return cell

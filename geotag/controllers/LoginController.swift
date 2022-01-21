@@ -18,7 +18,7 @@ class LoginController: UIViewController {
     let versionLbl: UILabel = {
         let vl = UILabel()
         vl.translatesAutoresizingMaskIntoConstraints = false
-        vl.text = "v0.4.2"
+        vl.text = "v0.5.0"
         vl.textColor = .white
         return vl
     }()

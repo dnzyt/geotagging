@@ -2,7 +2,7 @@
 //  PrevVisitInfo+CoreDataClass.swift
 //  geotag
 //
-//  Created by Ningze Dai on 1/12/22.
+//  Created by Ningze Dai on 1/20/22.
 //
 //
 

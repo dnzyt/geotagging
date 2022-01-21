@@ -17,11 +17,13 @@ class HBSplitViewController: UISplitViewController {
     let hud = JGProgressHUD()
 
     var menuController: MenuController?
+    private var prevNavController: UINavigationController?
     private var businessNavController: UINavigationController?
     private var trainingNavController: UINavigationController?
     private var trackingNavController: UINavigationController?
     private var feedbackNavController: UINavigationController?
     
+    var prevController = PrevController()
     var businessController = BusinessController()
     var trainingController = TrainingController()
     var trackingController = TrackingController()
@@ -42,7 +44,9 @@ class HBSplitViewController: UISplitViewController {
         menuController = MenuController()
         menuController?.delegate = self
         
-        
+        prevController.navigationItem.leftBarButtonItem = cancelVisitBtn
+        prevController.navigationItem.rightBarButtonItem = submitBtn
+        prevNavController = UINavigationController(rootViewController: prevController)
         
         businessController.navigationItem.leftBarButtonItem = cancelVisitBtn
         businessController.navigationItem.rightBarButtonItem = submitBtn
@@ -73,7 +77,6 @@ class HBSplitViewController: UISplitViewController {
     }
     
     @objc fileprivate func cacelVisit() {
-        print("delete visit")
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let context = appDelegate.persistentContainer.viewContext
         
@@ -320,6 +323,8 @@ extension HBSplitViewController: MenuControllerDelegate {
             currentVC = trackingNavController
         case 3:
             currentVC = feedbackNavController
+        case 4:
+            currentVC = prevNavController
         default:
             currentVC = businessNavController
         }

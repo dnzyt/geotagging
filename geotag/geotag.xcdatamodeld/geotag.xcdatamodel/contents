@@ -11,7 +11,6 @@
         <attribute name="questionType" optional="YES" attributeType="String"/>
         <attribute name="textBox" optional="YES" attributeType="String"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="DropDownItem" inverseName="answerInfo" inverseEntity="DropDownItem"/>
-        <relationship name="prevVisitInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PrevVisitInfo" inverseName="answers" inverseEntity="PrevVisitInfo"/>
         <relationship name="visitInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="VisitInfo" inverseName="answers" inverseEntity="VisitInfo"/>
     </entity>
     <entity name="ClubInfo" representedClassName=".ClubInfo" syncable="YES">
@@ -49,10 +48,18 @@
         <attribute name="geocode" optional="YES" attributeType="String"/>
         <attribute name="isDone" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
     </entity>
+    <entity name="PrevAnswer" representedClassName="PrevAnswer" syncable="YES">
+        <attribute name="comments" optional="YES" attributeType="String"/>
+        <attribute name="labelKey" optional="YES" attributeType="String"/>
+        <attribute name="labelValue" optional="YES" attributeType="String"/>
+        <attribute name="selections" optional="YES" attributeType="String"/>
+        <attribute name="usersEntry" optional="YES" attributeType="String"/>
+        <relationship name="prevVisitInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PrevVisitInfo" inverseName="prevAnswers" inverseEntity="PrevVisitInfo"/>
+    </entity>
     <entity name="PrevVisitInfo" representedClassName="PrevVisitInfo" syncable="YES">
         <attribute name="visitNumber" optional="YES" attributeType="String"/>
-        <relationship name="answers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AnswerInfo" inverseName="prevVisitInfo" inverseEntity="AnswerInfo"/>
         <relationship name="clubInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ClubInfo" inverseName="prevVisitInfo" inverseEntity="ClubInfo"/>
+        <relationship name="prevAnswers" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="PrevAnswer" inverseName="prevVisitInfo" inverseEntity="PrevAnswer"/>
     </entity>
     <entity name="QuestionInfo" representedClassName=".QuestionInfo" syncable="YES">
         <attribute name="categoryId" optional="YES" attributeType="String"/>
@@ -72,13 +79,14 @@
         <relationship name="answers" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AnswerInfo" inverseName="visitInfo" inverseEntity="AnswerInfo"/>
     </entity>
     <elements>
-        <element name="AnswerInfo" positionX="-101.487548828125" positionY="-220.9345092773437" width="128" height="223"/>
-        <element name="ClubInfo" positionX="-36.676025390625" positionY="-619.5404663085938" width="128" height="313"/>
+        <element name="AnswerInfo" positionX="-105.58935546875" positionY="-243.9039916992187" width="128" height="208"/>
+        <element name="ClubInfo" positionX="-36.7940673828125" positionY="-659.5196533203125" width="128" height="313"/>
         <element name="DropDownItem" positionX="120.536376953125" positionY="-120.4271850585937" width="128" height="88"/>
-        <element name="LabelInfo" positionX="86.150634765625" positionY="82.04071044921875" width="131.949462890625" height="88"/>
+        <element name="LabelInfo" positionX="15.5703125" positionY="27.40618896484375" width="131.949462890625" height="88"/>
         <element name="OfflineGeocode" positionX="157.23828125" positionY="-420.6027221679688" width="128" height="88"/>
-        <element name="PrevVisitInfo" positionX="-285.63330078125" positionY="-375.8999633789062" width="128" height="88"/>
-        <element name="QuestionInfo" positionX="-507.5576171875" positionY="21.971923828125" width="196.4769287109375" height="149"/>
+        <element name="PrevAnswer" positionX="-472.2794189453125" positionY="-556.1457824707031" width="128" height="133"/>
+        <element name="PrevVisitInfo" positionX="-209.7215576171875" positionY="-593.5712280273438" width="128" height="88"/>
+        <element name="QuestionInfo" positionX="-454.7110595703125" positionY="-55.8326416015625" width="179.5029296875" height="149"/>
         <element name="VisitInfo" positionX="-463.963623046875" positionY="-283.5109863281251" width="148.694580078125" height="118"/>
     </elements>
 </model>
